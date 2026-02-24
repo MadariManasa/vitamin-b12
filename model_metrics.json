@@ -1,0 +1,79 @@
+{
+  "model_type": "logistic_regression",
+  "train_accuracy": 0.533,
+  "test_accuracy": 0.497,
+  "precision": 0.18775510204081633,
+  "recall": 0.467005076142132,
+  "f1_score": 0.2678311499272198,
+  "roc_auc": 0.4709749606488359,
+  "confusion_matrix": [
+    [
+      405,
+      398
+    ],
+    [
+      105,
+      92
+    ]
+  ],
+  "feature_importance": {},
+  "classification_report": {
+    "0": {
+      "precision": 0.7941176470588235,
+      "recall": 0.5043586550435866,
+      "f1-score": 0.6169078446306169,
+      "support": 803.0
+    },
+    "1": {
+      "precision": 0.18775510204081633,
+      "recall": 0.467005076142132,
+      "f1-score": 0.2678311499272198,
+      "support": 197.0
+    },
+    "accuracy": 0.497,
+    "macro avg": {
+      "precision": 0.4909363745498199,
+      "recall": 0.4856818655928593,
+      "f1-score": 0.44236949727891833,
+      "support": 1000.0
+    },
+    "weighted avg": {
+      "precision": 0.6746642256902761,
+      "recall": 0.497,
+      "f1-score": 0.5481397357740476,
+      "support": 1000.0
+    }
+  },
+  "training_date": "2025-12-13 20:36:13",
+  "n_samples": 5000,
+  "class_distribution": {
+    "0": 4015,
+    "1": 985
+  },
+  "dataset_info": {
+    "n_samples": 5000,
+    "n_features": 13,
+    "deficiency_rate": 0.197,
+    "feature_names": [
+      "age",
+      "gender",
+      "bmi",
+      "systolic_bp",
+      "diastolic_bp",
+      "cholesterol",
+      "hdl",
+      "ldl",
+      "glucose",
+      "smoker",
+      "diabetic",
+      "diet_score",
+      "risk_factor"
+    ],
+    "training_date": "2025-12-13 20:36:13"
+  },
+  "test_set_distribution": {
+    "test_samples": 1000,
+    "test_deficient": 197,
+    "test_normal": 803
+  }
+}

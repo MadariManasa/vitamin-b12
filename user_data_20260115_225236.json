@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 30,
+    "gender": "Male",
+    "weight": 65,
+    "height": 170,
+    "bmi": 22.5,
+    "diet_type": "Omnivore",
+    "symptoms_count": 5,
+    "medical_conditions": 2,
+    "medications_count": 3,
+    "symptoms_list": "Fatigue, Pale Skin, Numbness, Vision Issues, Depression",
+    "conditions_list": "Crohn's Disease / IBD, Gastritis / GERD",
+    "medications_list": "Metformin (for diabetes), Birth Control Pills, Anticonvulsants",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-01-15T22:52:36.265373"
+}

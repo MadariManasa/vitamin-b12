@@ -1,0 +1,21 @@
+{
+  "n_samples": 5000,
+  "n_features": 13,
+  "deficiency_rate": 0.197,
+  "feature_names": [
+    "age",
+    "gender",
+    "bmi",
+    "systolic_bp",
+    "diastolic_bp",
+    "cholesterol",
+    "hdl",
+    "ldl",
+    "glucose",
+    "smoker",
+    "diabetic",
+    "diet_score",
+    "risk_factor"
+  ],
+  "training_date": "2025-12-13 20:36:13"
+}

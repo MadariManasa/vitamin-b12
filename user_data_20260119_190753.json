@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 45,
+    "height": 155,
+    "bmi": 18.7,
+    "diet_type": "Omnivore",
+    "symptoms_count": 0,
+    "medical_conditions": 0,
+    "medications_count": 0,
+    "symptoms_list": "",
+    "conditions_list": "",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-01-19T19:07:53.446918"
+}

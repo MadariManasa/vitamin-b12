@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 30,
+    "gender": "Male",
+    "weight": 65,
+    "height": 170,
+    "bmi": 22.5,
+    "diet_type": "Omnivore",
+    "symptoms_count": 4,
+    "medical_conditions": 4,
+    "medications_count": 3,
+    "symptoms_list": "Fatigue, Pale Skin, Numbness, Walking Issues",
+    "conditions_list": "Diabetes (especially on Metformin), Celiac Disease, Autoimmune Disorders, Gastritis / GERD",
+    "medications_list": "Proton Pump Inhibitors (PPIs), Birth Control Pills, Long-term Antibiotics",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2025-12-21T18:14:47.735539"
+}

@@ -1,0 +1,53 @@
+Dataset: Nhanes_cvd_raw.csv
+Rows: 27493
+Columns: 47
+
+COLUMNS:
+==================================================
+  1. SEQN
+  2. Protein
+  3. Carbohydrates
+  4. Sugars
+  5. Fiber
+  6. Saturated_Fat
+  7. Monounsaturated_Fat
+  8. Polyunsaturated_Fat
+  9. Cholesterol
+ 10. Beta_Carotene
+ 11. Cryptoxanthin
+ 12. Lutein_Zeaxanthin
+ 13. Thiamin
+ 14. Riboflavin
+ 15. Niacin
+ 16. Vitamin_B6
+ 17. Folic_Acid
+ 18. Food_Folate
+ 19. Iron
+ 20. Choline
+ 21. Vitamin_B12
+ 22. Vitamin_C
+ 23. Vitamin_D
+ 24. Vitamin_E
+ 25. Vitamin_K
+ 26. Calcium
+ 27. Phosphorus
+ 28. Magnesium
+ 29. Zinc
+ 30. Copper
+ 31. Sodium
+ 32. Potassium
+ 33. Selenium
+ 34. Theobromine
+ 35. Moisture
+ 36. Congestive
+ 37. Coronary
+ 38. Heart_attack
+ 39. Stroke
+ 40. Angina
+ 41. Age
+ 42. BMI
+ 43. Waist_circ
+ 44. Systolic_BP
+ 45. Diastolic_BP
+ 46. Total_Colesterol
+ 47. C_Reactive
