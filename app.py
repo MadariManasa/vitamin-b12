@@ -4352,18 +4352,20 @@ IMPORTANT RULES:
         st.info(" Click 'Generate Simple Meal Plan' to create your 7-day meal plan with just food items!")
 
 # ==================== VOICE ASSISTANT PAGE ====================
-# ==================== VOICE ASSISTANT PAGE - WORKING VERSION ====================
+# ==================== VOICE ASSISTANT PAGE - WITH WORKING MIC ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
     
-    # Import the correct audio recorder
-    from audio_recorder_streamlit import audio_recorder
+    # Import mic recorder
+    from streamlit_mic_recorder import mic_recorder
     
     # Initialize session states
     if 'voice_question' not in st.session_state:
         st.session_state.voice_question = ""
     if 'ai_response' not in st.session_state:
         st.session_state.ai_response = ""
+    if 'audio_bytes' not in st.session_state:
+        st.session_state.audio_bytes = None
     
     col1, col2 = st.columns([2, 1])
     
@@ -4371,28 +4373,27 @@ elif page == " Voice Assistant":
         # ========== VOICE INPUT ==========
         st.markdown("### 🎤 Step 1: Record Your Voice")
         
-        # Audio recorder widget
-        audio_bytes = audio_recorder(
-            text="Click to record",
-            recording_color="#ff4b4b",
-            neutral_color="#6c757d",
-            icon_size="2x",
-            key="voice_recorder"
+        # Mic recorder
+        audio = mic_recorder(
+            start_prompt="🔴 Start Recording",
+            stop_prompt="⏹️ Stop Recording",
+            just_once=False,
+            use_container_width=True,
+            key="recorder"
         )
         
-        if audio_bytes:
-            st.audio(audio_bytes, format="audio/wav")
-            st.success("✅ Recording captured!")
-            st.session_state.audio_bytes = audio_bytes
+        if audio:
+            st.audio(audio["bytes"], format="audio/wav")
+            st.session_state.audio_bytes = audio["bytes"]
+            st.success("✅ Recording captured! Click 'Convert to Text' below.")
         
-        # Process voice button
-        if st.button("🎯 Convert to Text", type="primary", disabled=not st.session_state.get('audio_bytes')):
+        # Convert button
+        if st.button("🔄 Convert to Text", type="secondary", disabled=not st.session_state.audio_bytes):
             with st.spinner("Converting speech to text..."):
                 try:
                     import speech_recognition as sr
                     import io
                     
-                    # Convert audio bytes to text
                     recognizer = sr.Recognizer()
                     audio_file = io.BytesIO(st.session_state.audio_bytes)
                     
@@ -4418,7 +4419,7 @@ elif page == " Voice Assistant":
             "Edit your question here:",
             value=st.session_state.voice_question,
             height=100,
-            placeholder="Your voice will appear here after conversion...",
+            placeholder="Your transcribed text will appear here...",
             key="question_input"
         )
         
@@ -4429,7 +4430,7 @@ elif page == " Voice Assistant":
         st.markdown("### 🤖 Step 3: Get AI Response")
         
         if st.button("🚀 Generate Answer", type="primary", use_container_width=True, disabled=not st.session_state.voice_question):
-            with st.spinner("🤔 AI is thinking..."):
+            with st.spinner("AI is thinking..."):
                 try:
                     from utils import setup_gemini_api
                     
@@ -4437,9 +4438,9 @@ elif page == " Voice Assistant":
                     if model:
                         prompt = f"""You are a helpful Vitamin B12 expert assistant.
                         
-User Question: {st.session_state.voice_question}
+Question: {st.session_state.voice_question}
 
-Provide a clear, accurate, and helpful answer about Vitamin B12."""
+Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
                         
                         response = model.generate_content(prompt)
                         st.session_state.ai_response = response.text
@@ -4449,18 +4450,19 @@ Provide a clear, accurate, and helpful answer about Vitamin B12."""
                         st.error("AI service unavailable")
                         
                 except Exception as e:
-                    st.error(f"❌ AI error: {str(e)}")
+                    st.error(f"❌ Error: {str(e)}")
         
-        # ========== SHOW AI RESPONSE ==========
+        # ========== SHOW ANSWER ==========
         if st.session_state.ai_response:
-            st.markdown("### 💬 AI Response")
+            st.markdown("---")
+            st.markdown("### 💬 Answer")
             with st.container(border=True):
                 st.markdown(st.session_state.ai_response)
             
             col_d1, col_d2 = st.columns(2)
             with col_d1:
                 st.download_button(
-                    label="📥 Download",
+                    label="📥 Download Answer",
                     data=st.session_state.ai_response,
                     file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
                     mime="text/plain"
@@ -4469,16 +4471,28 @@ Provide a clear, accurate, and helpful answer about Vitamin B12."""
                 if st.button("🔄 New Question", use_container_width=True):
                     st.session_state.voice_question = ""
                     st.session_state.ai_response = ""
-                    if 'audio_bytes' in st.session_state:
-                        del st.session_state.audio_bytes
+                    st.session_state.audio_bytes = None
                     st.rerun()
     
     with col2:
         st.markdown("### 📊 Status")
         if st.session_state.voice_question:
             st.success("✅ Question ready")
+            words = len(st.session_state.voice_question.split())
+            st.metric("Word count", words)
         if st.session_state.ai_response:
             st.success("✅ Answer ready")
+        
+        st.markdown("---")
+        st.markdown("### 💡 Tips")
+        st.markdown("""
+        1. Click **Start Recording**
+        2. Speak clearly
+        3. Click **Stop Recording**
+        4. Click **Convert to Text**
+        5. Edit if needed
+        6. Get AI answer
+        """)
 
 # # ==================== RESULTS PAGE ====================
 
