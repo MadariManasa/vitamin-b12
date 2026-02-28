@@ -4352,12 +4352,12 @@ IMPORTANT RULES:
         st.info(" Click 'Generate Simple Meal Plan' to create your 7-day meal plan with just food items!")
 
 # ==================== VOICE ASSISTANT PAGE ====================
-# ==================== VOICE ASSISTANT PAGE - CORRECT VERSION ====================
+# ==================== VOICE ASSISTANT PAGE - WORKING VERSION ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
     
     # Import the correct audio recorder
-    from st_audiorec import st_audiorec
+    from audio_recorder_streamlit import audio_recorder
     
     # Initialize session states
     if 'voice_question' not in st.session_state:
@@ -4371,13 +4371,19 @@ elif page == " Voice Assistant":
         # ========== VOICE INPUT ==========
         st.markdown("### 🎤 Step 1: Record Your Voice")
         
-        # Audio recorder widget - correct function
-        wav_audio_data = st_audiorec()
+        # Audio recorder widget
+        audio_bytes = audio_recorder(
+            text="Click to record",
+            recording_color="#ff4b4b",
+            neutral_color="#6c757d",
+            icon_size="2x",
+            key="voice_recorder"
+        )
         
-        if wav_audio_data is not None:
-            st.audio(wav_audio_data, format='audio/wav')
+        if audio_bytes:
+            st.audio(audio_bytes, format="audio/wav")
             st.success("✅ Recording captured!")
-            st.session_state.audio_bytes = wav_audio_data
+            st.session_state.audio_bytes = audio_bytes
         
         # Process voice button
         if st.button("🎯 Convert to Text", type="primary", disabled=not st.session_state.get('audio_bytes')):
@@ -4398,6 +4404,10 @@ elif page == " Voice Assistant":
                         st.success("✅ Voice converted to text!")
                         st.rerun()
                         
+                except sr.UnknownValueError:
+                    st.error("❌ Could not understand audio. Please try again.")
+                except sr.RequestError:
+                    st.error("❌ Speech service error. Check internet connection.")
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
         
@@ -4435,6 +4445,8 @@ Provide a clear, accurate, and helpful answer about Vitamin B12."""
                         st.session_state.ai_response = response.text
                         st.success("✅ Answer ready!")
                         st.rerun()
+                    else:
+                        st.error("AI service unavailable")
                         
                 except Exception as e:
                     st.error(f"❌ AI error: {str(e)}")
@@ -4445,12 +4457,28 @@ Provide a clear, accurate, and helpful answer about Vitamin B12."""
             with st.container(border=True):
                 st.markdown(st.session_state.ai_response)
             
-            if st.button("🔄 New Question", use_container_width=True):
-                st.session_state.voice_question = ""
-                st.session_state.ai_response = ""
-                if 'audio_bytes' in st.session_state:
-                    del st.session_state.audio_bytes
-                st.rerun()
+            col_d1, col_d2 = st.columns(2)
+            with col_d1:
+                st.download_button(
+                    label="📥 Download",
+                    data=st.session_state.ai_response,
+                    file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+                    mime="text/plain"
+                )
+            with col_d2:
+                if st.button("🔄 New Question", use_container_width=True):
+                    st.session_state.voice_question = ""
+                    st.session_state.ai_response = ""
+                    if 'audio_bytes' in st.session_state:
+                        del st.session_state.audio_bytes
+                    st.rerun()
+    
+    with col2:
+        st.markdown("### 📊 Status")
+        if st.session_state.voice_question:
+            st.success("✅ Question ready")
+        if st.session_state.ai_response:
+            st.success("✅ Answer ready")
 
 # # ==================== RESULTS PAGE ====================
 

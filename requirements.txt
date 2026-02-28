@@ -18,3 +18,9 @@ streamlit-audiorec
 streamlit-audiorec
 speechrecognition
 # ... other dependencies
+audio-recorder-streamlit
+speechrecognition
+audio-recorder-streamlit
+speechrecognition
+google-generativeai
+# ... other dependencies
