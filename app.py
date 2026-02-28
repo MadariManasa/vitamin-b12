@@ -4352,287 +4352,105 @@ IMPORTANT RULES:
         st.info(" Click 'Generate Simple Meal Plan' to create your 7-day meal plan with just food items!")
 
 # ==================== VOICE ASSISTANT PAGE ====================
+# ==================== VOICE ASSISTANT PAGE - CORRECT VERSION ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
+    
+    # Import the correct audio recorder
+    from st_audiorec import st_audiorec
     
     # Initialize session states
     if 'voice_question' not in st.session_state:
         st.session_state.voice_question = ""
     if 'ai_response' not in st.session_state:
         st.session_state.ai_response = ""
-    if 'just_spoke' not in st.session_state:
-        st.session_state.just_spoke = False
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
         # ========== VOICE INPUT ==========
-        st.markdown("### 🎤 Step 1: Speak Your Question")
+        st.markdown("### 🎤 Step 1: Record Your Voice")
         
-        voice_col1, voice_col2 = st.columns(2)
+        # Audio recorder widget - correct function
+        wav_audio_data = st_audiorec()
         
-        with voice_col1:
-            if st.button("🎙️ Start Speaking", type="primary", use_container_width=True):
+        if wav_audio_data is not None:
+            st.audio(wav_audio_data, format='audio/wav')
+            st.success("✅ Recording captured!")
+            st.session_state.audio_bytes = wav_audio_data
+        
+        # Process voice button
+        if st.button("🎯 Convert to Text", type="primary", disabled=not st.session_state.get('audio_bytes')):
+            with st.spinner("Converting speech to text..."):
                 try:
                     import speech_recognition as sr
-                    r = sr.Recognizer()
-                    with sr.Microphone() as source:
-                        st.info("🎧 Listening... Speak clearly!")
-                        r.adjust_for_ambient_noise(source, duration=0.5)
-                        audio = r.listen(source, timeout=10)
+                    import io
+                    
+                    # Convert audio bytes to text
+                    recognizer = sr.Recognizer()
+                    audio_file = io.BytesIO(st.session_state.audio_bytes)
+                    
+                    with sr.AudioFile(audio_file) as source:
+                        audio_data = recognizer.record(source)
+                        text = recognizer.recognize_google(audio_data)
                         
-                        # Transcribe voice to text
-                        text = r.recognize_google(audio)
-                        
-                        # Save to session state
                         st.session_state.voice_question = text
-                        st.session_state.just_spoke = True
-                        
-                        st.success("✅ Voice captured!")
+                        st.success("✅ Voice converted to text!")
                         st.rerun()
                         
-                except sr.UnknownValueError:
-                    st.error("❌ Could not understand audio. Please try again.")
-                except sr.RequestError:
-                    st.error("❌ Speech service error. Check your internet connection.")
                 except Exception as e:
-                    st.error(f"❌ Microphone error: {str(e)}")
-        
-        with voice_col2:
-            if st.button("🗑️ Clear All", type="secondary", use_container_width=True):
-                st.session_state.voice_question = ""
-                st.session_state.ai_response = ""
-                st.session_state.just_spoke = False
-                st.rerun()
+                    st.error(f"❌ Error: {str(e)}")
         
         # ========== TEXT BOX ==========
         st.markdown("### 📝 Step 2: Your Question")
         
-        # Show spoken confirmation (small and subtle)
-        if st.session_state.just_spoke and st.session_state.voice_question:
-            st.caption(f"🗣️ Spoken: {st.session_state.voice_question[:50]}...")
-            st.session_state.just_spoke = False
-        
-        # Text box - shows the spoken text
         question_text = st.text_area(
             "Edit your question here:",
             value=st.session_state.voice_question,
-            height=120,
-            placeholder="Click 'Start Speaking' and your words will appear here...",
-            key="question_input_box"
+            height=100,
+            placeholder="Your voice will appear here after conversion...",
+            key="question_input"
         )
         
-        # Update if user edits
         if question_text != st.session_state.voice_question:
             st.session_state.voice_question = question_text
-        
-        # Show word count
-        if st.session_state.voice_question:
-            words = len(st.session_state.voice_question.split())
-            st.caption(f"📊 {words} words")
         
         # ========== GET AI RESPONSE ==========
         st.markdown("### 🤖 Step 3: Get AI Response")
         
-        if st.button("🚀 Generate AI Answer", type="primary", use_container_width=True, disabled=not st.session_state.voice_question):
+        if st.button("🚀 Generate Answer", type="primary", use_container_width=True, disabled=not st.session_state.voice_question):
             with st.spinner("🤔 AI is thinking..."):
                 try:
                     from utils import setup_gemini_api
                     
-                    # Get user context
-                    user_data = st.session_state.get('user_data', {})
-                    age = user_data.get('age', 30) if user_data else 30
-                    diet = user_data.get('diet_type', 'Omnivore') if user_data else 'Omnivore'
-                    
-                    # Call AI
                     model = setup_gemini_api()
                     if model:
                         prompt = f"""You are a helpful Vitamin B12 expert assistant.
                         
 User Question: {st.session_state.voice_question}
 
-User Profile: {age} years old, {diet} diet
-
-Provide a clear, accurate, and helpful answer about Vitamin B12.
-Keep the response concise but informative."""
+Provide a clear, accurate, and helpful answer about Vitamin B12."""
                         
                         response = model.generate_content(prompt)
                         st.session_state.ai_response = response.text
                         st.success("✅ Answer ready!")
-                    else:
-                        # Fallback response
-                        st.session_state.ai_response = f"""**Question:** {st.session_state.voice_question}
-
-**Answer:** I couldn't connect to the AI service. Please consult a healthcare provider for accurate information about Vitamin B12.
-
-**General Information:** Vitamin B12 is essential for nerve function, red blood cell formation, and DNA synthesis. Common symptoms of deficiency include fatigue, weakness, numbness, and memory problems."""
-                        # st.warning("⚠️ Using offline response - AI service unavailable")
+                        st.rerun()
                         
                 except Exception as e:
                     st.error(f"❌ AI error: {str(e)}")
-                    st.session_state.ai_response = "Sorry, I encountered an error. Please try again."
         
         # ========== SHOW AI RESPONSE ==========
         if st.session_state.ai_response:
             st.markdown("### 💬 AI Response")
-            
             with st.container(border=True):
                 st.markdown(st.session_state.ai_response)
             
-            # ========== VOICE OUTPUT ==========
-            st.markdown("### 🔊 Step 4: Listen to Answer")
-            
-            # JavaScript for voice output
-            safe_text = st.session_state.ai_response.replace('`', '').replace('\\', '').replace('"', '\\"').replace("'", "\\'")
-            
-            voice_js = f"""
-            <script>
-            let currentSpeech = null;
-            let isSpeaking = false;
-            
-            function speakResponse() {{
-                if ('speechSynthesis' in window) {{
-                    if (isSpeaking) {{
-                        window.speechSynthesis.cancel();
-                    }}
-                    
-                    const text = `{safe_text}`;
-                    currentSpeech = new SpeechSynthesisUtterance(text);
-                    
-                    currentSpeech.rate = 1.0;
-                    currentSpeech.volume = 1.0;
-                    currentSpeech.lang = 'en-US';
-                    currentSpeech.pitch = 1.0;
-                    
-                    currentSpeech.onstart = function() {{
-                        document.getElementById('speakBtn').innerHTML = '🔊 Speaking...';
-                        document.getElementById('status').innerHTML = '🔊 Speaking';
-                        document.getElementById('status').style.color = '#10B981';
-                        isSpeaking = true;
-                    }};
-                    
-                    currentSpeech.onend = function() {{
-                        document.getElementById('speakBtn').innerHTML = '🔊 Play Again';
-                        document.getElementById('status').innerHTML = '✅ Finished';
-                        document.getElementById('status').style.color = '#3B82F6';
-                        isSpeaking = false;
-                    }};
-                    
-                    currentSpeech.onerror = function() {{
-                        document.getElementById('speakBtn').innerHTML = '🔊 Speak';
-                        document.getElementById('status').innerHTML = '❌ Error';
-                        document.getElementById('status').style.color = '#EF4444';
-                        isSpeaking = false;
-                    }};
-                    
-                    window.speechSynthesis.speak(currentSpeech);
-                }} else {{
-                    alert('Voice output requires Chrome, Edge, or Safari.');
-                }}
-            }}
-            
-            function stopSpeech() {{
-                if ('speechSynthesis' in window && isSpeaking) {{
-                    window.speechSynthesis.cancel();
-                    document.getElementById('speakBtn').innerHTML = '🔊 Speak';
-                    document.getElementById('status').innerHTML = '⏹️ Stopped';
-                    document.getElementById('status').style.color = '#F59E0B';
-                    isSpeaking = false;
-                }}
-            }}
-            </script>
-            
-            <div style="margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <button onclick="speakResponse()" id="speakBtn" style="
-                        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-                        color: white;
-                        padding: 12px 24px;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        flex: 1;
-                    ">
-                         🔊 Play Answer
-                    </button>
-                    
-                    <button onclick="stopSpeech()" style="
-                        background: #EF4444;
-                        color: white;
-                        padding: 12px 24px;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        flex: 1;
-                    ">
-                         ⏹️ Stop
-                    </button>
-                </div>
-                
-                <p id="status" style="font-weight: bold; color: #9CA3AF; margin: 5px 0; text-align: center;">
-                    Status: Ready
-                </p>
-            </div>
-            """
-            
-            st.components.v1.html(voice_js, height=150)
-            
-            # Download option
-            col_d1, col_d2 = st.columns(2)
-            with col_d1:
-                st.download_button(
-                    label="📥 Save Response",
-                    data=st.session_state.ai_response,
-                    file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
-                    mime="text/plain",
-                    use_container_width=True
-                )
-            with col_d2:
-                if st.button("🔄 New Question", use_container_width=True):
-                    st.session_state.voice_question = ""
-                    st.session_state.ai_response = ""
-                    st.rerun()
-    
-    with col2:
-        # Status panel
-        st.markdown("### 📊 Status Panel")
-        
-        if st.session_state.voice_question:
-            st.success("✅ Question ready")
-            with st.expander("📋 View full question"):
-                st.write(st.session_state.voice_question)
-        else:
-            st.info("⏳ No question yet")
-        
-        if st.session_state.ai_response:
-            st.success("✅ Answer ready")
-            response_words = len(st.session_state.ai_response.split())
-            st.metric("Response Length", f"{response_words} words")
-        
-        st.markdown("---")
-        st.markdown("###  Quick Tips")
-        st.markdown("""
-        1. Click **Start Speaking**
-        2. Speak clearly
-        3. Text appears in box
-        4. Click Generate
-        5. Listen to answer
-        """)
-        
-        with st.expander(" Sample Questions"):
-            st.markdown("• What are B12 symptoms?")
-            st.markdown("• Which foods have B12?")
-            st.markdown("• How much B12 daily?")
-            st.markdown("• B12 for vegetarians?")
-            st.markdown("• Can too much B12 be harmful?")
-        
-        # Quick load examples
-
-
+            if st.button("🔄 New Question", use_container_width=True):
+                st.session_state.voice_question = ""
+                st.session_state.ai_response = ""
+                if 'audio_bytes' in st.session_state:
+                    del st.session_state.audio_bytes
+                st.rerun()
 
 # # ==================== RESULTS PAGE ====================
 
