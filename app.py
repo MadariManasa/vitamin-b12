@@ -5188,14 +5188,13 @@ elif page == " History":
                     st.write(f"- Search history: {history_count}")
 
 # ======================FOOD SCANNER PAGE====================
-
-# ==================== FOOD SCANNER PAGE WITH AI RECOMMENDATIONS ====================
+# ==================== FOOD SCANNER PAGE WITH AI RECOMMENDATIONS - FIXED ====================
 elif page == " Food Scanner":
     st.markdown('<div class="main-title">  AI-Powered B12 Food Scanner</div>', unsafe_allow_html=True)
     
     st.success("Welcome to the AI Food Scanner!")
     
-    # Comprehensive B12 Food Database (defined at the page level)
+    # Comprehensive B12 Food Database
     b12_database = {
         # Eggs
         'egg': 0.6, 'eggs': 0.6, 'omelette': 0.6, 'boiled egg': 0.6, 'fried egg': 0.6,
@@ -5245,7 +5244,7 @@ elif page == " Food Scanner":
         'pizza': 0.5, 'sandwich': 0.3, 'grilled sandwich': 0.4,
     }
     
-    # Define the local analysis function INSIDE the page to access b12_database
+    # ==================== LOCAL DATABASE ANALYSIS FUNCTION ====================
     def analyze_b12_food_local(food_input):
         """Fallback function using local database when AI fails"""
         
@@ -5356,9 +5355,9 @@ elif page == " Food Scanner":
             
             # Additional context
             with st.expander("➕ Add more context (optional)"):
-                meal_time = st.selectbox("When did you eat?", ["Breakfast", "Lunch", "Dinner", "Snack"])
-                portion_size = st.select_slider("Portion size", options=["Small", "Medium", "Large"], value="Medium")
-                additional_notes = st.text_input("Any specific ingredients?", placeholder="e.g., with butter, fried, boiled")
+                meal_time = st.selectbox("When did you eat?", ["Breakfast", "Lunch", "Dinner", "Snack"], key="food_meal_time")
+                portion_size = st.select_slider("Portion size", options=["Small", "Medium", "Large"], value="Medium", key="food_portion")
+                additional_notes = st.text_input("Any specific ingredients?", placeholder="e.g., with butter, fried, boiled", key="food_notes")
         
         with col2:
             st.markdown("**💡 Tips for better results:**")
@@ -5374,105 +5373,115 @@ elif page == " Food Scanner":
             else:
                 st.markdown("• Complete assessment for personalized analysis")
         
-        if st.button("🔍 Analyze with AI", type="primary", use_container_width=True):
+        if st.button("🔍 Analyze with AI", type="primary", width='stretch', key="analyze_food_text"):
             if food_input:
                 with st.spinner("🤖 AI is analyzing your meal... This may take a few seconds"):
                     try:
-                        # Configure Gemini API with environment variable
-                        import google.generativeai as genai
-                        genai.configure(api_key=GEMINI_API_KEY_MEAL)
-                        
-                        # Get user context
-                        user_context = ""
-                        if st.session_state.user_data:
-                            user = st.session_state.user_data
-                            user_context = f"The user is {user.get('age', 'unknown')} years old and follows a {user.get('diet_type', 'omnivore')} diet."
-                        
-                        # Create prompt for AI analysis
-                        prompt = f"""
-                        You are a nutrition expert specializing in Vitamin B12.
-                        
-                        Analyze this meal description: "{food_input}"
-                        
-                        Context:
-                        - Meal time: {meal_time if 'meal_time' in locals() else 'Not specified'}
-                        - Portion size: {portion_size if 'portion_size' in locals() else 'Medium'}
-                        - Additional notes: {additional_notes if 'additional_notes' in locals() else 'None'}
-                        - {user_context}
-                        
-                        Provide a detailed analysis in the following EXACT TABLE FORMAT:
-                        
-                        | Food Item | Estimated Quantity | B12 Content (mcg) | Confidence | Notes |
-                        |-----------|-------------------|-------------------|------------|-------|
-                        | [item 1] | [quantity] | [value] | [High/Med/Low] | [notes] |
-                        | [item 2] | [quantity] | [value] | [High/Med/Low] | [notes] |
-                        
-                        | Total B12 | Daily Need | % Met | Rating | Recommendation |
-                        |-----------|------------|-------|--------|----------------|
-                        | [total] mcg | 2.4 mcg | [%] | [🔴/🟡/🟢/💪] | [specific advice] |
-                        
-                        Based on this analysis, provide:
-                        1. **B12 Score:** [0-100]
-                        2. **Meal Quality:** [Poor/Average/Good/Excellent]
-                        3. **Suggestions to improve B12 intake:**
-                           • [Suggestion 1]
-                           • [Suggestion 2]
-                           • [Suggestion 3]
-                        
-                        Use simple, easy-to-understand language. Be encouraging and practical.
-                        """
-                        
-                        # Try different model names
-                        model_names = ['gemini-pro', 'models/gemini-pro', 'gemini-1.0-pro', 'gemini-1.5-pro','gemini-2.0-pro','gemini-2.5-pro','gemini-3.0-pro','gemini-2.5-flash','gemini-3.0-flash']
-                        response = None
-                        
-                        for model_name in model_names:
-                            try:
-                                model = genai.GenerativeModel(model_name)
-                                response = model.generate_content(prompt)
-                                if response and response.text:
-                                    break
-                            except:
-                                continue
-                        
-                        if response and response.text:
-                            st.markdown("---")
-                            st.markdown("### 📊 AI Analysis Results")
-                            
-                            # Display the AI response
-                            st.markdown(response.text)
-                            
-                            # Try to extract and display B12 score if present
-                            if "B12 Score:" in response.text:
-                                import re
-                                score_match = re.search(r'B12 Score:\s*(\d+)', response.text)
-                                if score_match:
-                                    score = int(score_match.group(1))
-                                    st.progress(score/100, text=f"B12 Score: {score}/100")
-                            
-                            # Download button for results
-                            st.download_button(
-                                label="📥 Download Analysis",
-                                data=response.text,
-                                file_name=f"b12_food_analysis_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
-                                mime="text/plain"
-                            )
-                            
-                            # Log activity
-                            log_user_activity(
-                                activity_type='food_scan_ai',
-                                data={'food': food_input[:50]},
-                                description="AI food analysis"
-                            )
-                            
-                        else:
-                            st.error("AI analysis failed. Using local database as fallback.")
-                            # Fallback to local database
+                        # Check if API key exists
+                        if not GEMINI_API_KEY_MEAL:
+                            st.warning("⚠️ Gemini API key not found. Using local database instead.")
                             analyze_b12_food_local(food_input)
+                        else:
+                            # Configure Gemini API
+                            import google.generativeai as genai
+                            genai.configure(api_key=GEMINI_API_KEY_MEAL)
+                            
+                            # Get user context
+                            user_context = ""
+                            if st.session_state.user_data:
+                                user = st.session_state.user_data
+                                user_context = f"The user is {user.get('age', 'unknown')} years old and follows a {user.get('diet_type', 'omnivore')} diet."
+                            
+                            # Create prompt for AI analysis
+                            prompt = f"""
+                            You are a nutrition expert specializing in Vitamin B12.
+                            
+                            Analyze this meal description: "{food_input}"
+                            
+                            Context:
+                            - Meal time: {meal_time}
+                            - Portion size: {portion_size}
+                            - Additional notes: {additional_notes if additional_notes else 'None'}
+                            - {user_context}
+                            
+                            Provide a detailed analysis in the following EXACT TABLE FORMAT:
+                            
+                            | Food Item | Estimated Quantity | B12 Content (mcg) | Confidence | Notes |
+                            |-----------|-------------------|-------------------|------------|-------|
+                            | [item 1] | [quantity] | [value] | [High/Med/Low] | [notes] |
+                            | [item 2] | [quantity] | [value] | [High/Med/Low] | [notes] |
+                            
+                            | Total B12 | Daily Need | % Met | Rating | Recommendation |
+                            |-----------|------------|-------|--------|----------------|
+                            | [total] mcg | 2.4 mcg | [%] | [🔴/🟡/🟢/💪] | [specific advice] |
+                            
+                            Based on this analysis, provide:
+                            1. **B12 Score:** [0-100]
+                            2. **Meal Quality:** [Poor/Average/Good/Excellent]
+                            3. **Suggestions to improve B12 intake:**
+                               • [Suggestion 1]
+                               • [Suggestion 2]
+                               • [Suggestion 3]
+                            
+                            Use simple, easy-to-understand language. Be encouraging and practical.
+                            """
+                            
+                            # Try different model names (only existing ones)
+                            model_names = [
+                                'gemini-1.5-pro',
+                                'gemini-1.5-flash',
+                                'gemini-pro'
+                            ]
+                            
+                            response = None
+                            
+                            for model_name in model_names:
+                                try:
+                                    model = genai.GenerativeModel(model_name)
+                                    response = model.generate_content(prompt)
+                                    if response and response.text:
+                                        break
+                                except Exception as e:
+                                    print(f"Model {model_name} failed: {str(e)[:50]}")
+                                    continue
+                            
+                            if response and response.text:
+                                st.markdown("---")
+                                st.markdown("### 📊 AI Analysis Results")
+                                
+                                # Display the AI response
+                                st.markdown(response.text)
+                                
+                                # Try to extract and display B12 score if present
+                                if "B12 Score:" in response.text:
+                                    import re
+                                    score_match = re.search(r'B12 Score:\s*(\d+)', response.text)
+                                    if score_match:
+                                        score = int(score_match.group(1))
+                                        st.progress(score/100, text=f"B12 Score: {score}/100")
+                                
+                                # Download button for results
+                                st.download_button(
+                                    label="📥 Download Analysis",
+                                    data=response.text,
+                                    file_name=f"b12_food_analysis_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+                                    mime="text/plain",
+                                    key="download_food_analysis"
+                                )
+                                
+                                # Log activity
+                                log_user_activity(
+                                    activity_type='food_scan_ai',
+                                    data={'food': food_input[:50]},
+                                    description="AI food analysis"
+                                )
+                                
+                            else:
+                                st.warning("⚠️ AI analysis unavailable. Using local database instead.")
+                                analyze_b12_food_local(food_input)
                             
                     except Exception as e:
-                        st.error(f"Error: {str(e)}")
-                        # Fallback to local database
+                        st.warning(f"⚠️ AI service error. Using local database instead.")
                         analyze_b12_food_local(food_input)
             else:
                 st.warning("Please describe your meal first")
@@ -5485,7 +5494,8 @@ elif page == " Food Scanner":
         uploaded_file = st.file_uploader(
             "Choose a clear photo of your meal",
             type=['jpg', 'jpeg', 'png'],
-            help="Well-lit, clear photos work best"
+            help="Well-lit, clear photos work best",
+            key="food_photo_upload"
         )
         
         if uploaded_file is not None:
@@ -5493,23 +5503,29 @@ elif page == " Food Scanner":
             image = Image.open(uploaded_file)
             st.image(image, caption="Your meal", use_container_width=True)
             
-            if st.button("🔍 Analyze Food Photo with AI", type="primary", use_container_width=True):
+            if st.button("🔍 Analyze Food Photo with AI", type="primary", width='stretch', key="analyze_food_photo"):
                 with st.spinner("🤖 AI is analyzing your food photo... This may take 10-15 seconds"):
                     try:
-                        # Call the AI function for image analysis
-                        result = analyze_food_with_gemini(image)
-                        
-                        st.markdown("---")
-                        st.markdown("### 📊 AI Food Analysis Results")
-                        st.markdown(result)
-                        
-                        # Download button
-                        st.download_button(
-                            label="📥 Download Analysis",
-                            data=result,
-                            file_name=f"b12_food_photo_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
-                            mime="text/plain"
-                        )
+                        # Check if API key exists
+                        if not GEMINI_API_KEY_FOOD:
+                            st.warning("⚠️ Gemini API key not found. Photo analysis unavailable.")
+                            st.info("Try using the text description or food guide tabs instead.")
+                        else:
+                            # Call the AI function for image analysis
+                            result = analyze_food_with_gemini(image)
+                            
+                            st.markdown("---")
+                            st.markdown("### 📊 AI Food Analysis Results")
+                            st.markdown(result)
+                            
+                            # Download button
+                            st.download_button(
+                                label="📥 Download Analysis",
+                                data=result,
+                                file_name=f"b12_food_photo_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+                                mime="text/plain",
+                                key="download_photo_analysis"
+                            )
                         
                     except Exception as e:
                         st.error(f"Error analyzing image: {str(e)}")
@@ -5520,7 +5536,7 @@ elif page == " Food Scanner":
         st.info("Use this guide to identify B12-rich foods")
         
         # Search functionality
-        search = st.text_input("🔍 Search for a food:", placeholder="e.g., eggs, salmon, milk")
+        search = st.text_input("🔍 Search for a food:", placeholder="e.g., eggs, salmon, milk", key="food_search")
         
         if search:
             # Filter database based on search
