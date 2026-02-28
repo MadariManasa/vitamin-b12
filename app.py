@@ -5190,10 +5190,9 @@ elif page == " History":
 # ======================FOOD SCANNER PAGE====================
 # ==================== FOOD SCANNER PAGE WITH AI RECOMMENDATIONS - FIXED ====================
 elif page == " Food Scanner":
-    elif page == " Food Scanner":
-    st.markdown('<div class="main-title">  AI-Powered B12 Food Scanner</div>', unsafe_allow_html=True)
     
-    # ========== TEMPORARY DEBUG SECTION ==========
+    st.markdown('<div class="main-title">  AI-Powered B12 Food Scanner</div>', unsafe_allow_html=True)
+        # ========== TEMPORARY DEBUG SECTION ==========
     st.warning("🔍 DEBUG MODE - Remove after testing")
     
     # Test 1: Check if secrets are loading
@@ -5273,8 +5272,7 @@ elif page == " Food Scanner":
     
     st.markdown("---")
     # ========== END DEBUG SECTION ==========
-    st.markdown('<div class="main-title">  AI-Powered B12 Food Scanner</div>', unsafe_allow_html=True)
-    
+
     st.success("Welcome to the AI Food Scanner!")
     
     # Comprehensive B12 Food Database
