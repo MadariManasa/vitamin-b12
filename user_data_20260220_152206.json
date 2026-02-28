@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 60,
+    "height": 154,
+    "bmi": 25.3,
+    "diet_type": "Omnivore",
+    "symptoms_count": 4,
+    "medical_conditions": 1,
+    "medications_count": 0,
+    "symptoms_list": "Dizziness, Vision Issues, Memory Loss, Depression",
+    "conditions_list": "Gastritis / GERD",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-20T15:22:06.199595"
+}

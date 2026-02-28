@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 54,
+    "height": 154,
+    "bmi": 22.8,
+    "diet_type": "Pescetarian",
+    "symptoms_count": 3,
+    "medical_conditions": 4,
+    "medications_count": 0,
+    "symptoms_list": "Fatigue, Dizziness, Numbness",
+    "conditions_list": "Autoimmune Disorders, Pernicious Anemia, Gastritis / GERD, Previous GI Surgery",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-25T18:54:34.470045"
+}

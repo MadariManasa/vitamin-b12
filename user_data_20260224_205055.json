@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 50,
+    "height": 154,
+    "bmi": 21.1,
+    "diet_type": "Omnivore",
+    "symptoms_count": 2,
+    "medical_conditions": 2,
+    "medications_count": 2,
+    "symptoms_list": "Pale Skin, Muscle Weak",
+    "conditions_list": "Crohn's Disease / IBD, Autoimmune Disorders",
+    "medications_list": "H2 Blockers, Birth Control Pills",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-24T20:50:55.372812"
+}

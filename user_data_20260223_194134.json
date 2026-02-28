@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 29,
+    "gender": "Male",
+    "weight": 54,
+    "height": 125,
+    "bmi": 34.6,
+    "diet_type": "Pescetarian",
+    "symptoms_count": 0,
+    "medical_conditions": 0,
+    "medications_count": 0,
+    "symptoms_list": "",
+    "conditions_list": "",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-23T19:41:34.910841"
+}

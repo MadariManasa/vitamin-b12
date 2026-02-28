@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 50,
+    "gender": "Female",
+    "weight": 56,
+    "height": 165,
+    "bmi": 20.6,
+    "diet_type": "Vegan",
+    "symptoms_count": 2,
+    "medical_conditions": 0,
+    "medications_count": 0,
+    "symptoms_list": "Dizziness, Breathlessness",
+    "conditions_list": "",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-24T21:07:48.321533"
+}
