@@ -5189,66 +5189,89 @@ elif page == " History":
 
 # ======================FOOD SCANNER PAGE====================
 # ==================== FOOD SCANNER PAGE WITH AI RECOMMENDATIONS - FIXED ====================
-# ==================== FOOD SCANNER PAGE WITH AI RECOMMENDATIONS ====================
 elif page == " Food Scanner":
     
     st.markdown('<div class="main-title">  AI-Powered B12 Food Scanner</div>', unsafe_allow_html=True)
+        # ========== TEMPORARY DEBUG SECTION ==========
+    st.warning("🔍 DEBUG MODE - Remove after testing")
     
-    # ========== ALWAYS VISIBLE DEBUG INFO ==========
-    with st.expander("🔍 API Status (Click to expand)", expanded=True):
-        st.markdown("### Current API Key Status")
-        
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            # Check GEMINI_API_KEY_MEAL
-            if 'GEMINI_API_KEY_MEAL' in dir():
-                key_value = GEMINI_API_KEY_MEAL
-                if key_value:
-                    st.success(f"✅ MEAL Key: {key_value[:8]}...")
-                else:
-                    st.error("❌ MEAL Key: Empty")
-            else:
-                st.error("❌ MEAL Key: Not found")
-        
-        with col2:
-            # Check GEMINI_API_KEY_FOOD
-            if 'GEMINI_API_KEY_FOOD' in dir():
-                key_value = GEMINI_API_KEY_FOOD
-                if key_value:
-                    st.success(f"✅ FOOD Key: {key_value[:8]}...")
-                else:
-                    st.error("❌ FOOD Key: Empty")
-            else:
-                st.error("❌ FOOD Key: Not found")
-        
-        with col3:
-            # Check GEMINI_API_KEY_SYMPTOM
-            if 'GEMINI_API_KEY_SYMPTOM' in dir():
-                key_value = GEMINI_API_KEY_SYMPTOM
-                if key_value:
-                    st.success(f"✅ SYMPTOM Key: {key_value[:8]}...")
-                else:
-                    st.error("❌ SYMPTOM Key: Empty")
-            else:
-                st.error("❌ SYMPTOM Key: Not found")
-        
-        # Check st.secrets directly
-        st.markdown("#### Checking st.secrets:")
-        try:
-            secrets_keys = list(st.secrets.keys())
-            st.write(f"Keys in secrets: {secrets_keys}")
-            
-            if "GEMINI_API_KEY_MEAL" in st.secrets:
-                st.success(f"✅ MEAL key in secrets: {st.secrets['GEMINI_API_KEY_MEAL'][:8]}...")
-            else:
-                st.error("❌ MEAL key NOT in secrets")
+    # Test 1: Check if secrets are loading
+    st.write("### Test 1: API Key Status")
+    
+    # Try different ways to access secrets
+    try:
+        # Method 1: Direct from st.secrets
+        key1 = st.secrets.get("GEMINI_API_KEY_MEAL", "Not found")
+        st.write(f"From st.secrets: {'✅ Found' if key1 != 'Not found' else '❌ Not found'}")
+        if key1 != 'Not found':
+            st.write(f"Key starts with: {key1[:8]}...")
+    except Exception as e:
+        st.write(f"Error accessing st.secrets: {e}")
+    
+    # Method 2: Check if GEMINI_API_KEY_MEAL variable exists
+    try:
+        st.write(f"GEMINI_API_KEY_MEAL variable exists: {'✅ Yes' if 'GEMINI_API_KEY_MEAL' in dir() else '❌ No'}")
+        if 'GEMINI_API_KEY_MEAL' in dir():
+            st.write(f"Value: {GEMINI_API_KEY_MEAL[:8]}...")
+    except:
+        pass
+    
+    # Test 2: Try a simple API call
+    st.write("### Test 2: Test Gemini API Connection")
+    
+    if st.button("Test Gemini API", key="test_api"):
+        with st.spinner("Testing API..."):
+            try:
+                import google.generativeai as genai
                 
-        except Exception as e:
-            st.error(f"Error accessing secrets: {e}")
+                # Try to get key from different sources
+                api_key = None
+                
+                # Try from variable first
+                if 'GEMINI_API_KEY_MEAL' in dir():
+                    api_key = GEMINI_API_KEY_MEAL
+                    st.write("✅ Using GEMINI_API_KEY_MEAL variable")
+                
+                # If not, try from secrets
+                if not api_key:
+                    try:
+                        api_key = st.secrets.get("GEMINI_API_KEY_MEAL")
+                        if api_key:
+                            st.write("✅ Using st.secrets")
+                    except:
+                        pass
+                
+                if not api_key:
+                    st.error("❌ No API key found anywhere!")
+                    st.info("Please add GEMINI_API_KEY_MEAL to Streamlit secrets")
+                else:
+                    st.write(f"✅ API Key found: {api_key[:8]}...")
+                    
+                    # Configure and test
+                    genai.configure(api_key=api_key)
+                    
+                    # List available models
+                    st.write("Available models:")
+                    models = genai.list_models()
+                    model_list = []
+                    for m in models:
+                        if 'generateContent' in m.supported_generation_methods:
+                            model_list.append(m.name)
+                            st.write(f"- {m.name}")
+                    
+                    if model_list:
+                        # Try a simple test
+                        model = genai.GenerativeModel(model_list[0])
+                        response = model.generate_content("Say hello in one word")
+                        st.success(f"✅ API working! Response: {response.text}")
+                    else:
+                        st.error("❌ No suitable models found")
+                        
+            except Exception as e:
+                st.error(f"❌ Error: {str(e)}")
     
     st.markdown("---")
-    # ========== END DEBUG INFO ==========
+    # ========== END DEBUG SECTION ==========
 
     st.success("Welcome to the AI Food Scanner!")
     
@@ -5431,29 +5454,6 @@ elif page == " Food Scanner":
             else:
                 st.markdown("• Complete assessment for personalized analysis")
         
-        # Add a test button right here
-        if st.button("🧪 Test API Connection", key="test_api_simple"):
-            import google.generativeai as genai
-            try:
-                # Try to get key
-                test_key = None
-                if 'GEMINI_API_KEY_MEAL' in dir():
-                    test_key = GEMINI_API_KEY_MEAL
-                    st.success("✅ Using GEMINI_API_KEY_MEAL variable")
-                else:
-                    test_key = st.secrets.get("GEMINI_API_KEY_MEAL")
-                    st.success("✅ Using st.secrets")
-                
-                if test_key:
-                    genai.configure(api_key=test_key)
-                    model = genai.GenerativeModel('gemini-pro')
-                    response = model.generate_content("Say hello")
-                    st.success(f"✅ API Works! Response: {response.text}")
-                else:
-                    st.error("❌ No API key found")
-            except Exception as e:
-                st.error(f"❌ Error: {e}")
-        
         if st.button("🔍 Analyze with AI", type="primary", width='stretch', key="analyze_food_text"):
             if food_input:
                 with st.spinner("🤖 AI is analyzing your meal... This may take a few seconds"):
@@ -5507,7 +5507,7 @@ elif page == " Food Scanner":
                             Use simple, easy-to-understand language. Be encouraging and practical.
                             """
                             
-                            # Try different model names
+                            # Try different model names (only existing ones)
                             model_names = [
                                 'gemini-1.5-pro',
                                 'gemini-1.5-flash',
