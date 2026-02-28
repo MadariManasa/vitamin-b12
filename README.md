@@ -1,2 +1,2 @@
 # vitamin-b12
-AI-powered health assistant for Vitamin B12 deficiency detection, featuring real-time barcode scanning, lab report analysis, and personalized supplement recommendations. Built with Streamlit and integrated with Open Food Facts API for instant product lookup.
+"AI-powered Vitamin B12 deficiency detection and management system using machine learning and computer vision. Features include risk assessment, lab report analysis, personalized meal planning, and smart medication reminders."
