@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 50,
+    "height": 175,
+    "bmi": 16.3,
+    "diet_type": "Omnivore",
+    "symptoms_count": 2,
+    "medical_conditions": 3,
+    "medications_count": 0,
+    "symptoms_list": "Breathlessness, Numbness",
+    "conditions_list": "Diabetes (especially on Metformin), Celiac Disease, Autoimmune Disorders",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-16T13:33:07.022549"
+}

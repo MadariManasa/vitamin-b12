@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 63,
+    "height": 155,
+    "bmi": 26.2,
+    "diet_type": "Omnivore",
+    "symptoms_count": 4,
+    "medical_conditions": 0,
+    "medications_count": 0,
+    "symptoms_list": "Fatigue, Numbness, Muscle Weak, Vision Issues",
+    "conditions_list": "",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-01-19T13:42:10.810739"
+}

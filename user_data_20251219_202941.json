@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 30,
+    "gender": "Male",
+    "weight": 65,
+    "height": 170,
+    "bmi": 22.5,
+    "diet_type": "Omnivore",
+    "symptoms_count": 3,
+    "medical_conditions": 2,
+    "medications_count": 3,
+    "symptoms_list": "Fatigue, Pale Skin, Numbness",
+    "conditions_list": "Pernicious Anemia, Gastritis / GERD",
+    "medications_list": "Anticonvulsants, Long-term Antibiotics, Cholesterol medications",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2025-12-19T20:29:41.455530"
+}

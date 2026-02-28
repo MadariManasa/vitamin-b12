@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 30,
+    "gender": "Male",
+    "weight": 65,
+    "height": 170,
+    "bmi": 22.5,
+    "diet_type": "Omnivore",
+    "symptoms_count": 0,
+    "medical_conditions": 0,
+    "medications_count": 0,
+    "symptoms_list": "",
+    "conditions_list": "",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-01-05T11:07:19.191650"
+}

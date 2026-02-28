@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "metadata": {
     "export_date": "2025-12-16T22:07:31.185159",
@@ -200,4 +201,208 @@
       }
     ]
   }
+=======
+{
+  "metadata": {
+    "export_date": "2025-12-16T22:07:31.185159",
+    "version": "1.0",
+    "report_type": "B12 Deficiency Assessment"
+  },
+  "user_data": {
+    "age": 35,
+    "gender": "Male",
+    "weight_kg": 40.0,
+    "height_cm": 170.0,
+    "bmi": 13.8,
+    "diet_type": "Omnivore",
+    "symptoms": [
+      "Heart Palpitations",
+      "Dizziness"
+    ],
+    "symptoms_count": 2,
+    "medical_conditions": 0,
+    "conditions_list": [],
+    "medications": "",
+    "family_history": true,
+    "smoking": "Current",
+    "alcohol": "Light",
+    "exercise": "Rarely",
+    "stress": "Moderate",
+    "b12_level": 78.0,
+    "medication_count": 0
+  },
+  "prediction": {
+    "deficient_probability": 0.8,
+    "prediction": 1,
+    "prediction_label": "Deficient",
+    "confidence": 0.85,
+    "risk_level": "High",
+    "model_used": "Lab Override (Critical Contradiction)",
+    "model_accuracy": 0.65,
+    "has_conflicts": true,
+    "data_quality": {
+      "grade": "F",
+      "score": 50,
+      "issues": [
+        {
+          "type": "BMI_CONTRADICTION",
+          "message": "BMI changed significantly: 24.2 \u2192 13.8",
+          "severity": "medium",
+          "action": "Verify measurements",
+          "report_pair": "Report 1 vs Latest"
+        },
+        {
+          "type": "LAB_RISK_MISMATCH",
+          "message": "Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+          "severity": "high",
+          "action": "Lab data takes priority - urgent review needed",
+          "report_pair": "Report 1 vs Latest"
+        },
+        {
+          "type": "LAB_RISK_MISMATCH",
+          "message": "Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+          "severity": "high",
+          "action": "Lab data takes priority - urgent review needed",
+          "report_pair": "Report 2 vs Latest"
+        },
+        {
+          "type": "LAB_RISK_MISMATCH",
+          "message": "Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+          "severity": "high",
+          "action": "Lab data takes priority - urgent review needed",
+          "report_pair": "Report 3 vs Latest"
+        },
+        {
+          "type": "LAB_RISK_MISMATCH",
+          "message": "Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+          "severity": "high",
+          "action": "Lab data takes priority - urgent review needed",
+          "report_pair": "Report 4 vs Latest"
+        },
+        {
+          "type": "LAB_RISK_MISMATCH",
+          "message": "Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+          "severity": "high",
+          "action": "Lab data takes priority - urgent review needed",
+          "report_pair": "Report 5 vs Latest"
+        },
+        {
+          "type": "LAB_RISK_MISMATCH",
+          "message": "Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+          "severity": "high",
+          "action": "Lab data takes priority - urgent review needed",
+          "report_pair": "Report 6 vs Latest"
+        }
+      ]
+    },
+    "conflict_alert": {
+      "type": "LAB_RISK_MISMATCH",
+      "message": "Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+      "severity": "high",
+      "action": "Lab data takes priority - urgent review needed",
+      "report_pair": "Report 1 vs Latest"
+    },
+    "medical_urgency": "Immediate"
+  },
+  "recommendations": {
+    "diet": [
+      "\ud83e\udd69 **Red meat:** Lean beef, lamb (3-4 servings/week)",
+      "\ud83c\udf57 **Poultry:** Chicken, turkey (2-3 servings/week)",
+      "\ud83d\udc1f **Fish:** Fatty fish (2 servings/week)",
+      "\ud83e\uddc0 **Dairy:** Milk, cheese, yogurt (2-3 servings/day)"
+    ],
+    "supplements": [
+      {
+        "type": "Methylcobalamin",
+        "dose": "1000-2000 mcg",
+        "frequency": "Daily",
+        "duration": "3-6 months minimum",
+        "notes": "Sublingual tablets for better absorption"
+      },
+      {
+        "type": "B-Complex",
+        "dose": "1 tablet",
+        "frequency": "Daily",
+        "duration": "3 months",
+        "notes": "Contains B12 plus other B vitamins"
+      },
+      {
+        "type": "Folate",
+        "dose": "400-800 mcg",
+        "frequency": "Daily",
+        "duration": "3 months",
+        "notes": "Often deficient with B12 deficiency"
+      },
+      {
+        "type": "Iron",
+        "dose": "65 mg",
+        "frequency": "Every other day",
+        "duration": "If anemic",
+        "notes": "Only if blood tests show anemia"
+      }
+    ],
+    "lifestyle": [
+      "\ud83d\udead **No smoking:** Smoking reduces B12 absorption by 30-40%",
+      "\ud83c\udf7a **Limit alcohol:** <2 drinks/day, alcohol impairs B12 utilization",
+      "\ud83d\udc8a **Medication review:** Discuss PPIs, metformin with doctor",
+      "\ud83c\udfc3 **Regular exercise:** Improves circulation and nutrient absorption"
+    ],
+    "medical": [
+      "\ud83e\ude78 **Blood tests:** Complete blood count (CBC), folate, iron studies",
+      "\ud83d\udc89 **Injection option:** Hydroxocobalamin 1000 mcg monthly if malabsorption",
+      "\ud83d\udd04 **Follow-up:** Retest B12 in 3-6 months after starting treatment"
+    ],
+    "ml_insights": [],
+    "warnings": [
+      "\u26a0\ufe0f **Data Quality Alert:** Multiple or contradictory reports detected",
+      "\ud83d\udd34 **LAB_RISK_MISMATCH:** Lab shows B12=78.0 pg/mL (deficient) but previous risk was Low",
+      "\ud83d\udccb **Action:** Lab data takes priority - urgent review needed",
+      "\ud83d\udea8 **Medical Urgency:** Consult healthcare provider within 1-2 weeks",
+      "\ud83e\udde0 **Neurological Risk:** Untreated deficiency can cause permanent nerve damage",
+      "\ud83e\ude78 **Anemia Risk:** May develop megaloblastic anemia"
+    ]
+  },
+  "supplement_plan": {
+    "risk_level": "High",
+    "diet_type": "Omnivore",
+    "age_group": "Under 50",
+    "plan_created": "2025-12-16T22:07:31.185173",
+    "supplements": [
+      {
+        "name": "Methylcobalamin",
+        "dose_mcg": 2000,
+        "frequency": "daily",
+        "form": "sublingual",
+        "duration_weeks": 26,
+        "priority": 1,
+        "instructions": "Dissolve under tongue 30 min before breakfast",
+        "target_level": "Restore neurological function"
+      },
+      {
+        "name": "B-Complex",
+        "dose_mcg": 50,
+        "frequency": "daily",
+        "form": "tablet",
+        "duration_weeks": 12,
+        "priority": 2,
+        "instructions": "With largest meal",
+        "target_level": "Support all B vitamins"
+      }
+    ],
+    "monitoring_schedule": [
+      {
+        "timing": "2 weeks",
+        "action": "Symptom check"
+      },
+      {
+        "timing": "3 months",
+        "action": "Blood test: B12, CBC"
+      },
+      {
+        "timing": "6 months",
+        "action": "Full reassessment"
+      }
+    ]
+  }
+>>>>>>> 7c36875a3473a43fa4acbe3693b875086aab96d7
 }

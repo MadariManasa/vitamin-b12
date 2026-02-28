@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 62,
+    "height": 154,
+    "bmi": 26.1,
+    "diet_type": "Omnivore",
+    "symptoms_count": 3,
+    "medical_conditions": 3,
+    "medications_count": 0,
+    "symptoms_list": "Fatigue, Muscle Weak, Walking Issues",
+    "conditions_list": "Celiac Disease, Crohn's Disease / IBD, Autoimmune Disorders",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-13T12:46:52.118678"
+}
