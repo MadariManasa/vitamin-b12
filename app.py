@@ -5430,7 +5430,8 @@ elif page == " Food Scanner":
                             model_names = [
                                 'gemini-1.5-pro',
                                 'gemini-1.5-flash',
-                                'gemini-pro'
+                                'gemini-pro',
+                                'gemini-2.5-flash'
                             ]
                             
                             response = None
