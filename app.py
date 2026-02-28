@@ -5189,10 +5189,12 @@ elif page == " History":
 
 # ======================FOOD SCANNER PAGE====================
 # ==================== FOOD SCANNER PAGE WITH AI RECOMMENDATIONS - FIXED ====================
+# ==================== FOOD SCANNER PAGE WITH AI RECOMMENDATIONS ====================
 elif page == " Food Scanner":
     
     st.markdown('<div class="main-title">  AI-Powered B12 Food Scanner</div>', unsafe_allow_html=True)
-        # ========== TEMPORARY DEBUG SECTION ==========
+    
+    # ========== TEMPORARY DEBUG SECTION ==========
     st.warning("🔍 DEBUG MODE - Remove after testing")
     
     # Test 1: Check if secrets are loading
