@@ -4352,7 +4352,7 @@ IMPORTANT RULES:
         st.info(" Click 'Generate Simple Meal Plan' to create your 7-day meal plan with just food items!")
 
 # ==================== VOICE ASSISTANT PAGE ====================
-# ==================== VOICE ASSISTANT PAGE - USING STREAMLIT'S BUILT-IN AUDIO ====================
+# ==================== VOICE ASSISTANT PAGE - FIXED VERSION ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
     
@@ -4370,14 +4370,16 @@ elif page == " Voice Assistant":
         # ========== VOICE INPUT ==========
         st.markdown("### 🎤 Step 1: Record Your Voice")
         
-        # Use Streamlit's built-in audio input (works on Streamlit Cloud!)
-        audio_bytes = st.audio_input(
+        # Use Streamlit's built-in audio input
+        audio_file = st.audio_input(
             "Click to record",
             key="voice_recorder",
             help="Click to start recording, click again to stop"
         )
         
-        if audio_bytes:
+        if audio_file is not None:
+            # Convert UploadedFile to bytes
+            audio_bytes = audio_file.read()
             st.audio(audio_bytes)
             st.session_state.audio_bytes = audio_bytes
             st.success("✅ Recording captured! Click 'Convert to Text' below.")
