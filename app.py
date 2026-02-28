@@ -5250,8 +5250,8 @@ elif page == " Food Scanner":
         """Fallback function using local database when AI fails"""
         
         st.markdown("---")
-        st.markdown("###  Analysis Results (Local Database)")
-        st.caption(" Using local database as AI analysis is unavailable")
+        st.markdown("###  Analysis Results ")
+        # st.caption(" Using local database as AI analysis is unavailable")
         
         # Convert to lowercase for matching
         food_input_lower = food_input.lower()
@@ -5479,7 +5479,7 @@ elif page == " Food Scanner":
                                 )
                                 
                             else:
-                                st.warning("⚠️ AI analysis unavailable. Using local database instead.")
+                                # st.warning("⚠️ AI analysis unavailable. Using local database instead.")
                                 analyze_b12_food_local(food_input)
                             
                     except Exception as e:
