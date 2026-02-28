@@ -4352,12 +4352,9 @@ IMPORTANT RULES:
         st.info(" Click 'Generate Simple Meal Plan' to create your 7-day meal plan with just food items!")
 
 # ==================== VOICE ASSISTANT PAGE ====================
-# ==================== VOICE ASSISTANT PAGE - WORKING VERSION ====================
+# ==================== VOICE ASSISTANT PAGE - USING STREAMLIT'S BUILT-IN AUDIO ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
-    
-    # Import audio recorder
-    from audio_recorder_streamlit import audio_recorder
     
     # Initialize session states
     if 'voice_question' not in st.session_state:
@@ -4373,17 +4370,15 @@ elif page == " Voice Assistant":
         # ========== VOICE INPUT ==========
         st.markdown("### 🎤 Step 1: Record Your Voice")
         
-        # Audio recorder
-        audio_bytes = audio_recorder(
-            text="Click to record",
-            recording_color="#ff4b4b",
-            neutral_color="#6c757d",
-            icon_size="2x",
-            key="voice_recorder"
+        # Use Streamlit's built-in audio input (works on Streamlit Cloud!)
+        audio_bytes = st.audio_input(
+            "Click to record",
+            key="voice_recorder",
+            help="Click to start recording, click again to stop"
         )
         
         if audio_bytes:
-            st.audio(audio_bytes, format="audio/wav")
+            st.audio(audio_bytes)
             st.session_state.audio_bytes = audio_bytes
             st.success("✅ Recording captured! Click 'Convert to Text' below.")
         
@@ -4394,6 +4389,7 @@ elif page == " Voice Assistant":
                     import speech_recognition as sr
                     import io
                     
+                    # Convert audio bytes to text
                     recognizer = sr.Recognizer()
                     audio_file = io.BytesIO(st.session_state.audio_bytes)
                     
@@ -4486,9 +4482,9 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
         st.markdown("---")
         st.markdown("### 💡 Tips")
         st.markdown("""
-        1. Click **record button** (red)
+        1. Click **record button** (🎤)
         2. Speak clearly
-        3. Click **stop** (square)
+        3. Click **stop** (■)
         4. Click **Convert to Text**
         5. Edit if needed
         6. Get AI answer
