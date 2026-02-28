@@ -7,20 +7,10 @@ requests>=2.31.0
 google-generativeai>=0.3.0
 python-dateutil>=2.8.2
 pymongo>=4.5.0
-streamlit-audio-recorder  # Add this instead of pyaudio
 pypdf2>=3.0.0
 pytz>=2023.3
 python-dotenv>=1.0.0
 pdfplumber>=0.10.0
 easyocr>=1.7.0
 fpdf>=1.7.2
-streamlit-audiorec
-streamlit-audiorec
-speechrecognition
-# ... other dependencies
-audio-recorder-streamlit
-speechrecognition
-audio-recorder-streamlit
-speechrecognition
-google-generativeai
-# ... other dependencies
+SpeechRecognition>=3.10.0
