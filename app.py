@@ -1,4 +1,27 @@
-# app.py - COMPLETE VERSION WITH WELCOME PAGE
+# app.py - COMPLETE VERSION WITH ENVIRONMENT VARIABLES
+# ==================== LOAD ENVIRONMENT VARIABLES ====================
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API keys from environment variables
+GEMINI_API_KEY_SYMPTOM = os.getenv('GEMINI_API_KEY_SYMPTOM')
+GEMINI_API_KEY_FOOD = os.getenv('GEMINI_API_KEY_FOOD')
+GEMINI_API_KEY_MEAL = os.getenv('GEMINI_API_KEY_MEAL')
+MONGODB_URI = os.getenv('MONGODB_URI')
+
+# Set MongoDB URI as environment variable for mongodb_connection
+if MONGODB_URI:
+    os.environ['MONGODB_URI'] = MONGODB_URI
+
+# Print confirmation (can be removed in production)
+if GEMINI_API_KEY_SYMPTOM and GEMINI_API_KEY_FOOD and GEMINI_API_KEY_MEAL:
+    print("✅ Environment variables loaded successfully")
+else:
+    print("⚠️ Some environment variables are missing. Check your .env file")
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -49,8 +72,8 @@ def analyze_symptom_with_ai(image, body_part):
         from datetime import datetime
         import io
         
-        # Configure Gemini API
-        genai.configure(api_key="AIzaSyAS00EEpghL3YY3zQTfCRLxTSPgibh7Yz0")
+        # Configure Gemini API with environment variable
+        genai.configure(api_key=GEMINI_API_KEY_SYMPTOM)
         
         # Prepare the image
         img_byte_arr = io.BytesIO()
@@ -121,7 +144,7 @@ DOCTOR ADVICE: [When to see a doctor]
             'gemini-1.5-pro',
             'gemini-pro-vision',
             'gemini-pro',
-            'models/gemini-1.5-flash'
+            'models/gemini-1.5-flash',
             'gemini-2.5-flash'
         ]
         
@@ -478,8 +501,8 @@ def analyze_food_with_gemini(image):
     from PIL import Image
     import io
     
-    # Configure Gemini with YOUR key
-    genai.configure(api_key="AIzaSyAS00EEpghL3YY3zQTfCRLxTSPgibh7Yz0")
+    # Configure Gemini with environment variable
+    genai.configure(api_key=GEMINI_API_KEY_FOOD)
     
     # Prepare the image
     img_byte_arr = io.BytesIO()
@@ -531,7 +554,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==================== CUSTOM CSS ====================
 # ==================== CUSTOM CSS ====================
 st.markdown("""
 <style>
@@ -2482,7 +2504,6 @@ if st.session_state.show_welcome and not st.session_state.authenticated:
     st.stop()
 
 # ==================== SIDEBAR ====================
-# ==================== SIDEBAR ====================
 with st.sidebar:
     # Simple header
     st.markdown("""
@@ -2605,6 +2626,7 @@ if page == " Login/Signup" or (not st.session_state.authenticated and not st.ses
 
 # ==================== DASHBOARD PAGE ====================
 
+# ==================== DASHBOARD PAGE - COMPLETE FIXED VERSION ====================
 if page == " Dashboard":
     # ENHANCED Dashboard Header with Background Image
     st.markdown(f"""
@@ -2846,7 +2868,27 @@ if page == " Dashboard":
                 for rem in db_reminders:
                     rem['id'] = rem.get('id', str(rem['_id']))
                     rem['completed_today'] = False
+                    rem['completion_history'] = rem.get('completion_history', [])
                 st.session_state.user_reminders = db_reminders
+    
+    # Initialize supplement tracking
+    if 'supplement_tracker' not in st.session_state:
+        st.session_state.supplement_tracker = {
+            'today': datetime.now().strftime("%Y-%m-%d"),
+            'taken': False,
+            'time_taken': None,
+            'streak': 0,
+            'last_taken_date': None,
+            'history': []
+        }
+    
+    # Check if it's a new day for supplement tracking
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    if st.session_state.supplement_tracker['today'] != today_str:
+        # Reset for new day
+        st.session_state.supplement_tracker['today'] = today_str
+        st.session_state.supplement_tracker['taken'] = False
+        st.session_state.supplement_tracker['time_taken'] = None
     
     # Check for due reminders
     check_reminders()
@@ -2888,7 +2930,7 @@ if page == " Dashboard":
                     sorted_notifs = sorted(st.session_state.notifications, 
                                           key=lambda x: x['timestamp'], reverse=True)
                     
-                    for notif in sorted_notifs[:10]:  # Show last 10
+                    for idx, notif in enumerate(sorted_notifs[:10]):  # Show last 10
                         bg_color = {
                             'info': 'rgba(59, 130, 246, 0.15)',
                             'success': 'rgba(16, 185, 129, 0.15)',
@@ -2905,26 +2947,60 @@ if page == " Dashboard":
                         
                         unread_indicator = "🔴" if not notif.get('read', False) else "✓"
                         
-                        st.markdown(f"""
-                        <div style="
-                            background: {bg_color};
-                            border-left: 4px solid {border_color};
-                            padding: 12px;
-                            border-radius: 8px;
-                            margin: 8px 0;
-                            border: 1px solid rgba(255,255,255,0.1);
-                        ">
-                            <div style="display: flex; justify-content: space-between;">
-                                <strong style="color: white;">{unread_indicator} {notif['title']}</strong>
-                                <small style="color: rgba(255,255,255,0.5);">{notif['timestamp'][5:16]}</small>
+                        # Create columns for notification content and delete button
+                        notif_col1, notif_col2 = st.columns([5, 1])
+                        
+                        with notif_col1:
+                            st.markdown(f"""
+                            <div style="
+                                background: {bg_color};
+                                border-left: 4px solid {border_color};
+                                padding: 12px;
+                                border-radius: 8px;
+                                margin: 8px 0;
+                                border: 1px solid rgba(255,255,255,0.1);
+                            ">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <strong style="color: white;">{unread_indicator} {notif['title']}</strong>
+                                    <small style="color: rgba(255,255,255,0.5);">{notif['timestamp'][5:16]}</small>
+                                </div>
+                                <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0;">{notif['message']}</p>
                             </div>
-                            <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0;">{notif['message']}</p>
-                        </div>
-                        """, unsafe_allow_html=True)
+                            """, unsafe_allow_html=True)
+                        
+                        with notif_col2:
+                            # Delete button for each notification
+                            if st.button("🗑️", key=f"del_notif_{notif['id']}", help="Delete notification"):
+                                # Remove this notification
+                                st.session_state.notifications = [
+                                    n for n in st.session_state.notifications 
+                                    if n['id'] != notif['id']
+                                ]
+                                st.rerun()
                     
-                    if st.button("✓ Mark All as Read", use_container_width=True):
-                        mark_all_read()
-                        st.rerun()
+                    # Action buttons
+                    col_notif1, col_notif2, col_notif3 = st.columns(3)
+                    
+                    with col_notif1:
+                        if st.button("✓ Mark All Read", key="mark_all_read_notifications", use_container_width=True):
+                            mark_all_read()
+                            st.rerun()
+                    
+                    with col_notif2:
+                        if st.button("🗑️ Clear Read", key="clear_read_notifications", use_container_width=True):
+                            # Remove all read notifications
+                            st.session_state.notifications = [
+                                n for n in st.session_state.notifications 
+                                if not n.get('read', False)
+                            ]
+                            st.rerun()
+                    
+                    with col_notif3:
+                        if st.button("🗑️ Delete All", key="delete_all_notifications", use_container_width=True):
+                            # Show confirmation
+                            if st.checkbox("⚠️ Confirm delete ALL notifications", key="confirm_delete_all_notifications"):
+                                st.session_state.notifications = []
+                                st.rerun()
                 else:
                     st.markdown("""
                     <div style="text-align: center; padding: 20px;">
@@ -3066,6 +3142,95 @@ if page == " Dashboard":
     
     st.markdown("---")
     
+    # ==================== SUPPLEMENT TRACKER SECTION ====================
+    st.markdown("###  Daily Supplement Tracker")
+    
+    sup_col1, sup_col2, sup_col3 = st.columns(3)
+    
+    with sup_col1:
+        # Supplement type selection
+        supplement_type = st.selectbox(
+            "💊 Supplement Type",
+            ["Methylcobalamin", "Cyanocobalamin", "B-Complex", "Multivitamin", "Other"],
+            key="supplement_type_select"
+        )
+    
+    with sup_col2:
+        supplement_dose = st.number_input(
+            "💊 Dose (mcg)",
+            min_value=0,
+            max_value=5000,
+            value=1000,
+            step=100,
+            key="supplement_dose_input"
+        )
+    
+    with sup_col3:
+        supplement_time = st.time_input(
+            "⏰ Time Taken",
+            value=datetime.now().time(),
+            key="supplement_time_input"
+        )
+    
+    # Display current supplement status
+    if st.session_state.supplement_tracker['taken']:
+        # Show completed status
+        st.success(f"✅ You've taken your B12 supplement today at {st.session_state.supplement_tracker['time_taken']}!")
+        st.metric("Current Streak", f"{st.session_state.supplement_tracker['streak']} days")
+    else:
+        # Show button to mark as taken
+        st.info("📝 You haven't taken your supplement today yet.")
+        
+        if st.button("✅ I've Taken My Supplement", key="mark_supplement_taken", use_container_width=True, type="primary"):
+            # Mark as taken
+            st.session_state.supplement_tracker['taken'] = True
+            st.session_state.supplement_tracker['time_taken'] = supplement_time.strftime("%I:%M %p")
+            
+            # Update streak
+            last_date = st.session_state.supplement_tracker['last_taken_date']
+            today = datetime.now().strftime("%Y-%m-%d")
+            
+            if last_date:
+                # Check if yesterday
+                yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+                if last_date == yesterday:
+                    st.session_state.supplement_tracker['streak'] += 1
+                elif last_date != today:
+                    # Reset streak if missed a day
+                    st.session_state.supplement_tracker['streak'] = 1
+            else:
+                st.session_state.supplement_tracker['streak'] = 1
+            
+            st.session_state.supplement_tracker['last_taken_date'] = today
+            
+            # Add to history
+            if 'history' not in st.session_state.supplement_tracker:
+                st.session_state.supplement_tracker['history'] = []
+            
+            st.session_state.supplement_tracker['history'].append({
+                'date': today,
+                'time': supplement_time.strftime("%I:%M %p"),
+                'type': supplement_type,
+                'dose': supplement_dose
+            })
+            
+            # Add notification
+            add_notification(
+                title="✅ Supplement Taken",
+                message=f"You took {supplement_dose}mcg {supplement_type}",
+                type="success"
+            )
+            
+            st.rerun()
+    
+    # Show supplement history
+    if st.session_state.supplement_tracker.get('history'):
+        with st.expander("📜 Supplement History"):
+            for entry in st.session_state.supplement_tracker['history'][-7:]:  # Last 7 days
+                st.markdown(f"📅 {entry['date']} at {entry['time']} - {entry['type']} ({entry['dose']} mcg)")
+    
+    st.markdown("---")
+    
     # ==================== REMINDER SECTION WITH MARK READ & DELETE ====================
     st.markdown("###  Reminders")
     
@@ -3123,7 +3288,7 @@ if page == " Dashboard":
                 key="reminder_repeat"
             )
             
-            if st.button(" Save Reminder", type="primary", use_container_width=True):
+            if st.button(" Save Reminder", key="save_reminder_button", type="primary", use_container_width=True):
                 if reminder_text:
                     time_str = reminder_time.strftime("%I:%M %p")
                     time_24h = reminder_time.strftime("%H:%M")
@@ -3244,7 +3409,7 @@ if page == " Dashboard":
                 with col_action1:
                     # MARK READ BUTTON - Only show if not completed today
                     if not is_completed:
-                        if st.button("✅ Done", key=f"mark_{rem['id']}", use_container_width=True):
+                        if st.button("✅ Done", key=f"mark_{rem['id']}_{i}", use_container_width=True):
                             # Mark as completed
                             rem['completed_today'] = True
                             rem['completed_at'] = datetime.now().strftime("%H:%M")
@@ -3267,7 +3432,7 @@ if page == " Dashboard":
                 
                 with col_action2:
                     # DELETE BUTTON
-                    if st.button("🗑️", key=f"del_{rem['id']}", help="Delete reminder", use_container_width=True):
+                    if st.button("🗑️", key=f"del_{rem['id']}_{i}", help="Delete reminder", use_container_width=True):
                         # Remove from session state
                         st.session_state.user_reminders = [
                             r for r in st.session_state.user_reminders 
@@ -3286,12 +3451,20 @@ if page == " Dashboard":
         col_bulk1, col_bulk2, col_bulk3 = st.columns(3)
         
         with col_bulk1:
-            if st.button("✅ Mark All Done", use_container_width=True):
+            if st.button("✅ Mark All Done", key="mark_all_done_reminders_bulk", use_container_width=True):
                 for rem in active_reminders:
                     if not (rem.get('completed_today', False) and rem.get('last_triggered') == today):
                         rem['completed_today'] = True
                         rem['completed_at'] = datetime.now().strftime("%H:%M")
                         rem['last_triggered'] = today
+                        
+                        # Add to completion history
+                        if 'completion_history' not in rem:
+                            rem['completion_history'] = []
+                        rem['completion_history'].append({
+                            'date': today,
+                            'time': rem['completed_at']
+                        })
                 add_notification(
                     title="✅ All Reminders Completed",
                     message="You've marked all reminders as done for today!",
@@ -3300,8 +3473,8 @@ if page == " Dashboard":
                 st.rerun()
         
         with col_bulk2:
-            if st.button("🗑️ Clear Completed", use_container_width=True):
-                # Remove only completed reminders
+            if st.button("🗑️ Clear Completed", key="clear_completed_reminders_bulk", use_container_width=True):
+                # Remove only completed reminders for today
                 st.session_state.user_reminders = [
                     r for r in st.session_state.user_reminders 
                     if not (r.get('completed_today', False) and r.get('last_triggered') == today)
@@ -3314,9 +3487,9 @@ if page == " Dashboard":
                 st.rerun()
         
         with col_bulk3:
-            if st.button("🗑️ Delete All", use_container_width=True):
+            if st.button("🗑️ Delete All", key="delete_all_reminders_bulk", use_container_width=True):
                 # Show confirmation
-                if st.checkbox("⚠️ Confirm delete ALL reminders"):
+                if st.checkbox("⚠️ Confirm delete ALL reminders", key="confirm_delete_all_reminders_bulk"):
                     st.session_state.user_reminders = []
                     add_notification(
                         title="🗑️ All Reminders Deleted",
@@ -3329,6 +3502,33 @@ if page == " Dashboard":
         st.info("No reminders yet. Add your first reminder above!")
     
     st.markdown("---")
+    
+    # ==================== TODAY'S SUMMARY ====================
+    st.markdown("###  Today's Summary")
+    
+    sum_col1, sum_col2, sum_col3 = st.columns(3)
+    
+    with sum_col1:
+        # Supplement status
+        if st.session_state.supplement_tracker['taken']:
+            st.success(f"✅ Supplement: Taken at {st.session_state.supplement_tracker['time_taken']}")
+        else:
+            st.warning("⏰ Supplement: Not taken yet")
+    
+    with sum_col2:
+        # Reminder status
+        if active_reminders:
+            st.info(f"📋 Reminders: {completed_today}/{reminder_count} completed")
+        else:
+            st.info("📋 Reminders: None scheduled")
+    
+    with sum_col3:
+        # Streak
+        streak = st.session_state.supplement_tracker.get('streak', 0)
+        if streak > 0:
+            st.success(f"🔥 Streak: {streak} days")
+        else:
+            st.info("🔥 Streak: Start today!")
     
     # ==================== MAIN CONTENT ====================
     content_col1, content_col2 = st.columns([2.5, 1.5])
@@ -3368,7 +3568,7 @@ if page == " Dashboard":
             q_diet = st.selectbox("**Your Diet Type**", ["Omnivore", "Vegetarian", "Vegan", "Pescetarian"], key="q_diet")
             q_fatigue = st.checkbox("**Do you feel tired often?**", key="q_fatigue")
             
-            if st.button("⚡ Calculate Risk Score", type="primary", use_container_width=True):
+            if st.button("⚡ Calculate Risk Score", key="quick_risk_calc", type="primary", use_container_width=True):
                 quick_score = 0
                 risk_factors = []
                 
@@ -3536,51 +3736,54 @@ if page == " Dashboard":
     
     # ==================== COMPLETION SUMMARY ====================
     st.markdown("---")
-    st.markdown("###  Today's Reminder Summary")
+    st.markdown("###  Today's Completion Summary")
     
-    if st.session_state.get('user_reminders'):
-        today = datetime.now().strftime("%Y-%m-%d")
-        total_today = sum(1 for r in st.session_state.user_reminders 
-                         if r.get('last_triggered') == today or r.get('created')[:10] == today)
-        completed = sum(1 for r in st.session_state.user_reminders 
-                       if r.get('completed_today', False) and r.get('last_triggered') == today)
-        pending = total_today - completed
+    if st.session_state.get('user_reminders') or st.session_state.supplement_tracker.get('taken'):
+        # Supplement summary
+        sup_status = "✅ Taken" if st.session_state.supplement_tracker['taken'] else "❌ Not taken"
+        
+        # Reminder summary
+        if active_reminders:
+            reminder_status = f"{completed_today}/{reminder_count} completed"
+        else:
+            reminder_status = "No reminders"
         
         col_s1, col_s2, col_s3 = st.columns(3)
         
         with col_s1:
             st.markdown(f"""
             <div style="background: rgba(59, 130, 246, 0.15); border: 2px solid #3B82F6; border-radius: 12px; padding: 20px; text-align: center;">
-                <div style="font-size: 2rem;">📊</div>
-                <div style="font-size: 1.8rem; color: #93c5fd;">{total_today}</div>
-                <div style="color: white;">Total Today</div>
+                <div style="font-size: 2rem;">💊</div>
+                <div style="font-size: 1.3rem; color: #93c5fd;">{sup_status}</div>
+                <div style="color: white;">Supplement</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col_s2:
             st.markdown(f"""
             <div style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10B981; border-radius: 12px; padding: 20px; text-align: center;">
-                <div style="font-size: 2rem;">✅</div>
-                <div style="font-size: 1.8rem; color: #86efac;">{completed}</div>
-                <div style="color: white;">Completed</div>
+                <div style="font-size: 2rem;">📋</div>
+                <div style="font-size: 1.3rem; color: #86efac;">{reminder_status}</div>
+                <div style="color: white;">Reminders</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col_s3:
+            streak = st.session_state.supplement_tracker.get('streak', 0)
             st.markdown(f"""
             <div style="background: rgba(245, 158, 11, 0.15); border: 2px solid #F59E0B; border-radius: 12px; padding: 20px; text-align: center;">
-                <div style="font-size: 2rem;">⏰</div>
-                <div style="font-size: 1.8rem; color: #fcd34d;">{pending}</div>
-                <div style="color: white;">Pending</div>
+                <div style="font-size: 2rem;">🔥</div>
+                <div style="font-size: 1.3rem; color: #fcd34d;">{streak} days</div>
+                <div style="color: white;">Streak</div>
             </div>
             """, unsafe_allow_html=True)
         
         # Progress bar
-        if total_today > 0:
-            progress = completed / total_today
-            st.progress(progress, text=f"Today's Progress: {completed}/{total_today} completed")
+        if active_reminders:
+            progress = completed_today / reminder_count if reminder_count > 0 else 0
+            st.progress(progress, text=f"Today's Progress: {completed_today}/{reminder_count} reminders completed")
     else:
-        st.info("No reminders for today. Add reminders to track your progress!")
+        st.info("No reminders or supplement tracking for today. Add reminders or take your supplement to see progress!")
     
     # ==================== QUICK FACTS ====================
     st.markdown("---")
@@ -3660,7 +3863,7 @@ if page == " Dashboard":
         <p style="color: rgba(255,255,255,0.8);">Take the first step today—assess your B12 status now!</p>
     </div>
     """, unsafe_allow_html=True)
-# ==================== LAB REPORTS PAGE ====================
+
 # ==================== LAB REPORTS PAGE ====================
 elif page == " Lab Reports":
     st.markdown('<div class="main-title"> 📊 Lab Report Analysis</div>', unsafe_allow_html=True)
@@ -3939,8 +4142,6 @@ RECOMMENDATIONS:
 
 
 # ==================== MEAL PLANNER PAGE ====================
-# ==================== MEAL PLANNER PAGE ====================
-# ==================== MEAL PLANNER PAGE ====================
 elif page == " Meal Planner":
     st.markdown('<div class="main-title">  AI-Powered Meal Planner</div>', unsafe_allow_html=True)
 
@@ -4150,7 +4351,6 @@ IMPORTANT RULES:
     else:
         st.info(" Click 'Generate Simple Meal Plan' to create your 7-day meal plan with just food items!")
 
-# ==================== VOICE ASSISTANT PAGE ====================
 # ==================== VOICE ASSISTANT PAGE ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
@@ -4975,9 +5175,18 @@ elif page == " History":
                 temp_count = len(st.session_state.temp_logs)
                 st.info(f"**Local logs:** {temp_count} activities waiting to be saved")
         
-        # Database Stats
+        # Database Stats - FIXED for guest mode
         with st.spinner("Loading database statistics..."):
-            stats = st.session_state.mongodb.get_dashboard_stats(user_id=st.session_state.current_user['user_id'])
+            # Check if user is logged in
+            if st.session_state.current_user:
+                stats = st.session_state.mongodb.get_dashboard_stats(user_id=st.session_state.current_user['user_id'])
+            else:
+                # Guest user - show local stats
+                stats = {
+                    'total_assessments': len([l for l in st.session_state.get('temp_logs', []) if l.get('type') == 'assessment']),
+                    'total_lab_reports': len(st.session_state.get('lab_reports', [])),
+                    'recent_activity': st.session_state.get('search_history', [])[:5]
+                }
         
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -4997,10 +5206,21 @@ elif page == " History":
         
         with tab1:
             st.markdown("#### Your Assessments")
-            assessments = st.session_state.mongodb.get_user_assessments(
-                user_id=st.session_state.current_user['user_id'],
-                limit=10
-            )
+            if st.session_state.current_user:
+                # Logged in user - get from MongoDB
+                assessments = st.session_state.mongodb.get_user_assessments(
+                    user_id=st.session_state.current_user['user_id'],
+                    limit=10
+                )
+            else:
+                # Guest user - show local data
+                st.info(" You're in guest mode. Login to save assessments to cloud!")
+                assessments = []
+                # Show local temp logs if any
+                if 'temp_logs' in st.session_state:
+                    local_assessments = [l for l in st.session_state.temp_logs if l.get('type') == 'assessment']
+                    if local_assessments:
+                        st.write(f"**Local assessments:** {len(local_assessments)} saved in browser")
             
             if assessments:
                 for assessment in assessments:
@@ -5013,22 +5233,31 @@ elif page == " History":
                             st.write(f"**Age:** {assessment.get('user_data', {}).get('age', 'N/A')}")
                             st.write(f"**Diet:** {assessment.get('user_data', {}).get('diet_type', 'N/A')}")
             else:
-                st.info("No assessments saved to cloud yet.")
+                if st.session_state.current_user:
+                    st.info("No assessments saved to cloud yet.")
+                # else message already shown above
         
         with tab2:
             st.markdown("#### Your Lab Reports")
-            lab_reports = st.session_state.mongodb.get_lab_reports(
-                user_id=st.session_state.current_user['user_id'],
-                limit=10
-            )
+            if st.session_state.current_user:
+                # Logged in user - get from MongoDB
+                lab_reports = st.session_state.mongodb.get_lab_reports(
+                    user_id=st.session_state.current_user['user_id'],
+                    limit=10
+                )
+            else:
+                # Guest user - show local reports
+                lab_reports = st.session_state.get('lab_reports', [])
+                if lab_reports:
+                    st.info(f" Showing {len(lab_reports)} local reports")
             
             if lab_reports:
                 for report in lab_reports:
                     with st.expander(f"Lab Report: {report.get('filename', 'Manual Entry')}"):
                         col1, col2 = st.columns(2)
                         with col1:
-                            if report.get('b12_value'):
-                                b12_val = report['b12_value']
+                            b12_val = report.get('b12_value')
+                            if b12_val:
                                 if b12_val < 200:
                                     st.error(f"**{b12_val} pg/mL** (Deficient)")
                                 elif b12_val < 300:
@@ -5037,60 +5266,68 @@ elif page == " History":
                                     st.success(f"**{b12_val} pg/mL** (Normal)")
                         with col2:
                             st.write(f"**Status:** {report.get('status', 'N/A')}")
-                            st.write(f"**Date:** {report.get('timestamp', 'N/A')}")
-                        
-                        # Show AI analysis if available
-                        if report.get('ai_analysis'):
-                            st.markdown("**AI Analysis Preview:**")
-                            st.write(report.get('ai_analysis', '')[:200] + "...")
+                            st.write(f"**Date:** {report.get('timestamp') or report.get('date', 'N/A')}")
             else:
-                st.info("No lab reports saved to cloud yet.")
+                st.info("No lab reports found.")
         
         with tab3:
             st.markdown("#### Export Your Data")
             
-            export_format = st.selectbox("Select Format", ["JSON", "CSV"])
-            
-            if st.button(" Export All My Data"):
-                with st.spinner("Exporting your data..."):
-                    try:
-                        data = st.session_state.mongodb.export_user_data(
-                            user_id=st.session_state.current_user['user_id'],
-                            format=export_format.lower()
-                        )
-                        
-                        if data:
-                            if export_format == "JSON":
-                                json_data = json.dumps(data, indent=2)
-                                st.download_button(
-                                    label="Download JSON",
-                                    data=json_data,
-                                    file_name=f"b12_assistant_data_{st.session_state.session_id}.json",
-                                    mime="application/json"
-                                )
-                            else:
-                                # For CSV, create a zip file
-                                import zipfile
-                                import io
-                                
-                                zip_buffer = io.BytesIO()
-                                with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
-                                    for collection_name, csv_data in data.items():
-                                        if csv_data:
-                                            zip_file.writestr(f"{collection_name}.csv", csv_data)
-                                
-                                st.download_button(
-                                    label="Download CSV (ZIP)",
-                                    data=zip_buffer.getvalue(),
-                                    file_name=f"b12_assistant_data_{st.session_state.session_id}.zip",
-                                    mime="application/zip"
-                                )
+            if st.session_state.current_user:
+                # Logged in user - can export from cloud
+                export_format = st.selectbox("Select Format", ["JSON", "CSV"])
+                
+                if st.button(" Export All My Data"):
+                    with st.spinner("Exporting your data..."):
+                        try:
+                            data = st.session_state.mongodb.export_user_data(
+                                user_id=st.session_state.current_user['user_id'],
+                                format=export_format.lower()
+                            )
                             
-                            st.success(" Data exported successfully!")
-                        else:
-                            st.warning("No data available for export")
-                    except Exception as e:
-                        st.error(f"Export failed: {str(e)}")
+                            if data:
+                                if export_format == "JSON":
+                                    json_data = json.dumps(data, indent=2)
+                                    st.download_button(
+                                        label="Download JSON",
+                                        data=json_data,
+                                        file_name=f"b12_assistant_data_{st.session_state.session_id}.json",
+                                        mime="application/json"
+                                    )
+                                else:
+                                    import zipfile
+                                    import io
+                                    
+                                    zip_buffer = io.BytesIO()
+                                    with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+                                        for collection_name, csv_data in data.items():
+                                            if csv_data:
+                                                zip_file.writestr(f"{collection_name}.csv", csv_data)
+                                    
+                                    st.download_button(
+                                        label="Download CSV (ZIP)",
+                                        data=zip_buffer.getvalue(),
+                                        file_name=f"b12_assistant_data_{st.session_state.session_id}.zip",
+                                        mime="application/zip"
+                                    )
+                                
+                                st.success(" Data exported successfully!")
+                            else:
+                                st.warning("No data available for export")
+                        except Exception as e:
+                            st.error(f"Export failed: {str(e)}")
+            else:
+                st.info(" Login to export your data to JSON or CSV format")
+                # Show local data option
+                if st.button(" View Local Data Summary"):
+                    temp_count = len(st.session_state.get('temp_logs', []))
+                    lab_count = len(st.session_state.get('lab_reports', []))
+                    history_count = len(st.session_state.get('search_history', []))
+                    
+                    st.write(f"**Local data in browser:**")
+                    st.write(f"- Activity logs: {temp_count}")
+                    st.write(f"- Lab reports: {lab_count}")
+                    st.write(f"- Search history: {history_count}")
 
 # ======================FOOD SCANNER PAGE====================
 
@@ -5283,9 +5520,9 @@ elif page == " Food Scanner":
             if food_input:
                 with st.spinner("🤖 AI is analyzing your meal... This may take a few seconds"):
                     try:
-                        # Configure Gemini API
+                        # Configure Gemini API with environment variable
                         import google.generativeai as genai
-                        genai.configure(api_key="AIzaSyAS00EEpghL3YY3zQTfCRLxTSPgibh7Yz0")
+                        genai.configure(api_key=GEMINI_API_KEY_MEAL)
                         
                         # Get user context
                         user_context = ""
@@ -6073,14 +6310,14 @@ elif page == " Barcode Scanner":
     test_barcodes = {
         "3017620422003": "Nutella - Popular hazelnut spread",
         "7622210449283": "Oreo - Chocolate sandwich cookies",
-        # "0743120310027": "Nature's Bounty B12 - Vitamin B12 supplement",
-        # "2001234500001": "Milk - Semi-skimmed milk",
-        # "5053827101107": "Corn Flakes - Fortified breakfast cereal",
-        # "5010327625014": "Orange Juice - Pure orange juice",
-        # "5449000000996": "Coca-Cola - Classic soda",
-        # "3057640111019": "Evian - Natural mineral water",
-        # "8000500315581": "Nutella 750g - Large size",
-        # "9300675037031": "Weet-Bix - Breakfast cereal"
+        "0743120310027": "Nature's Bounty B12 - Vitamin B12 supplement",
+        "2001234500001": "Milk - Semi-skimmed milk",
+        "5053827101107": "Corn Flakes - Fortified breakfast cereal",
+        "5010327625014": "Orange Juice - Pure orange juice",
+        "5449000000996": "Coca-Cola - Classic soda",
+        "3057640111019": "Evian - Natural mineral water",
+        "8000500315581": "Nutella 750g - Large size",
+        "9300675037031": "Weet-Bix - Breakfast cereal"
     }
     
     # ==================== UI HEADER ====================
@@ -6105,49 +6342,49 @@ elif page == " Barcode Scanner":
     test_items = list(test_barcodes.items())
     
     # First row
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if st.button(f"🥫 Nutella", key="test1", use_container_width=True):
             st.session_state.search_barcode = "3017620422003"
             st.session_state.search_now = True
-    # with col2:
-    #     if st.button(f"🥛 Milk", key="test2", use_container_width=True):
-    #         st.session_state.search_barcode = "2001234500001"
-    #         st.session_state.search_now = True
     with col2:
+        if st.button(f"🥛 Milk", key="test2", use_container_width=True):
+            st.session_state.search_barcode = "2001234500001"
+            st.session_state.search_now = True
+    with col3:
         if st.button(f"🍪 Oreo", key="test3", use_container_width=True):
             st.session_state.search_barcode = "7622210449283"
             st.session_state.search_now = True
     
     # Second row
-    # col4, col5, col6 = st.columns(3)
-    # with col4:
-    #     if st.button(f"💊 B12 Supplement", key="test4", use_container_width=True):
-    #         st.session_state.search_barcode = "0743120310027"
-    #         st.session_state.search_now = True
-    # with col5:
-    #     if st.button(f"🥣 Corn Flakes", key="test5", use_container_width=True):
-    #         st.session_state.search_barcode = "5053827101107"
-    #         st.session_state.search_now = True
-    # with col6:
-    #     if st.button(f"🧃 Orange Juice", key="test6", use_container_width=True):
-    #         st.session_state.search_barcode = "5010327625014"
-    #         st.session_state.search_now = True
+    col4, col5, col6 = st.columns(3)
+    with col4:
+        if st.button(f"💊 B12 Supplement", key="test4", use_container_width=True):
+            st.session_state.search_barcode = "0743120310027"
+            st.session_state.search_now = True
+    with col5:
+        if st.button(f"🥣 Corn Flakes", key="test5", use_container_width=True):
+            st.session_state.search_barcode = "5053827101107"
+            st.session_state.search_now = True
+    with col6:
+        if st.button(f"🧃 Orange Juice", key="test6", use_container_width=True):
+            st.session_state.search_barcode = "5010327625014"
+            st.session_state.search_now = True
     
-    # # Third row
-    # col7, col8, col9 = st.columns(3)
-    # with col7:
-    #     if st.button(f"🥤 Coca-Cola", key="test7", use_container_width=True):
-    #         st.session_state.search_barcode = "5449000000996"
-    #         st.session_state.search_now = True
-    # with col8:
-    #     if st.button(f"💧 Evian Water", key="test8", use_container_width=True):
-    #         st.session_state.search_barcode = "3057640111019"
-    #         st.session_state.search_now = True
-    # with col9:
-    #     if st.button(f"🥣 Weet-Bix", key="test9", use_container_width=True):
-    #         st.session_state.search_barcode = "9300675037031"
-    #         st.session_state.search_now = True
+    # Third row
+    col7, col8, col9 = st.columns(3)
+    with col7:
+        if st.button(f"🥤 Coca-Cola", key="test7", use_container_width=True):
+            st.session_state.search_barcode = "5449000000996"
+            st.session_state.search_now = True
+    with col8:
+        if st.button(f"💧 Evian Water", key="test8", use_container_width=True):
+            st.session_state.search_barcode = "3057640111019"
+            st.session_state.search_now = True
+    with col9:
+        if st.button(f"🥣 Weet-Bix", key="test9", use_container_width=True):
+            st.session_state.search_barcode = "9300675037031"
+            st.session_state.search_now = True
     
     st.markdown("---")
     
@@ -7055,4 +7292,3 @@ def convert_schedule_to_table(schedule_text, b12_value, status):
         })
     
     return df
-

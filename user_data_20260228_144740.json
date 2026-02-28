@@ -1,0 +1,19 @@
+{
+  "user_data": {
+    "age": 20,
+    "gender": "Female",
+    "weight": 54,
+    "height": 154,
+    "bmi": 22.8,
+    "diet_type": "Vegan",
+    "symptoms_count": 2,
+    "medical_conditions": 0,
+    "medications_count": 0,
+    "symptoms_list": "Pale Skin, Breathlessness",
+    "conditions_list": "",
+    "medications_list": "",
+    "b12_level": null
+  },
+  "risk_level": "Medium",
+  "timestamp": "2026-02-28T14:47:40.312219"
+}
