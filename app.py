@@ -4352,12 +4352,12 @@ IMPORTANT RULES:
         st.info(" Click 'Generate Simple Meal Plan' to create your 7-day meal plan with just food items!")
 
 # ==================== VOICE ASSISTANT PAGE ====================
-# ==================== VOICE ASSISTANT PAGE - WITH WORKING MIC ====================
+# ==================== VOICE ASSISTANT PAGE - WORKING VERSION ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
     
-    # Import mic recorder
-    from streamlit_mic_recorder import mic_recorder
+    # Import audio recorder
+    from audio_recorder_streamlit import audio_recorder
     
     # Initialize session states
     if 'voice_question' not in st.session_state:
@@ -4373,18 +4373,18 @@ elif page == " Voice Assistant":
         # ========== VOICE INPUT ==========
         st.markdown("### 🎤 Step 1: Record Your Voice")
         
-        # Mic recorder
-        audio = mic_recorder(
-            start_prompt="🔴 Start Recording",
-            stop_prompt="⏹️ Stop Recording",
-            just_once=False,
-            use_container_width=True,
-            key="recorder"
+        # Audio recorder
+        audio_bytes = audio_recorder(
+            text="Click to record",
+            recording_color="#ff4b4b",
+            neutral_color="#6c757d",
+            icon_size="2x",
+            key="voice_recorder"
         )
         
-        if audio:
-            st.audio(audio["bytes"], format="audio/wav")
-            st.session_state.audio_bytes = audio["bytes"]
+        if audio_bytes:
+            st.audio(audio_bytes, format="audio/wav")
+            st.session_state.audio_bytes = audio_bytes
             st.success("✅ Recording captured! Click 'Convert to Text' below.")
         
         # Convert button
@@ -4486,9 +4486,9 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
         st.markdown("---")
         st.markdown("### 💡 Tips")
         st.markdown("""
-        1. Click **Start Recording**
+        1. Click **record button** (red)
         2. Speak clearly
-        3. Click **Stop Recording**
+        3. Click **stop** (square)
         4. Click **Convert to Text**
         5. Edit if needed
         6. Get AI answer
