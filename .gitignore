@@ -31,3 +31,6 @@ Thumbs.db
 *.db
 *.sqlite
 data/
+# User data files
+user_data_*.json
+*.json
