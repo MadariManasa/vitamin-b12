@@ -6305,44 +6305,44 @@ elif page == " Barcode Scanner":
         if st.button(f"🥫 Nutella", key="test1", use_container_width=True):
             st.session_state.search_barcode = "3017620422003"
             st.session_state.search_now = True
+    # with col2:
+    #     if st.button(f"🥛 Milk", key="test2", use_container_width=True):
+    #         st.session_state.search_barcode = "2001234500001"
+    #         st.session_state.search_now = True
     with col2:
-        if st.button(f"🥛 Milk", key="test2", use_container_width=True):
-            st.session_state.search_barcode = "2001234500001"
-            st.session_state.search_now = True
-    with col3:
         if st.button(f"🍪 Oreo", key="test3", use_container_width=True):
             st.session_state.search_barcode = "7622210449283"
             st.session_state.search_now = True
     
     # Second row
-    col4, col5, col6 = st.columns(3)
-    with col4:
-        if st.button(f"💊 B12 Supplement", key="test4", use_container_width=True):
-            st.session_state.search_barcode = "0743120310027"
-            st.session_state.search_now = True
-    with col5:
-        if st.button(f"🥣 Corn Flakes", key="test5", use_container_width=True):
-            st.session_state.search_barcode = "5053827101107"
-            st.session_state.search_now = True
-    with col6:
-        if st.button(f"🧃 Orange Juice", key="test6", use_container_width=True):
-            st.session_state.search_barcode = "5010327625014"
-            st.session_state.search_now = True
+    # col4, col5, col6 = st.columns(3)
+    # with col4:
+    #     if st.button(f"💊 B12 Supplement", key="test4", use_container_width=True):
+    #         st.session_state.search_barcode = "0743120310027"
+    #         st.session_state.search_now = True
+    # with col5:
+    #     if st.button(f"🥣 Corn Flakes", key="test5", use_container_width=True):
+    #         st.session_state.search_barcode = "5053827101107"
+    #         st.session_state.search_now = True
+    # with col6:
+    #     if st.button(f"🧃 Orange Juice", key="test6", use_container_width=True):
+    #         st.session_state.search_barcode = "5010327625014"
+    #         st.session_state.search_now = True
     
-    # Third row
-    col7, col8, col9 = st.columns(3)
-    with col7:
-        if st.button(f"🥤 Coca-Cola", key="test7", use_container_width=True):
-            st.session_state.search_barcode = "5449000000996"
-            st.session_state.search_now = True
-    with col8:
-        if st.button(f"💧 Evian Water", key="test8", use_container_width=True):
-            st.session_state.search_barcode = "3057640111019"
-            st.session_state.search_now = True
-    with col9:
-        if st.button(f"🥣 Weet-Bix", key="test9", use_container_width=True):
-            st.session_state.search_barcode = "9300675037031"
-            st.session_state.search_now = True
+    # # Third row
+    # col7, col8, col9 = st.columns(3)
+    # with col7:
+    #     if st.button(f"🥤 Coca-Cola", key="test7", use_container_width=True):
+    #         st.session_state.search_barcode = "5449000000996"
+    #         st.session_state.search_now = True
+    # with col8:
+    #     if st.button(f"💧 Evian Water", key="test8", use_container_width=True):
+    #         st.session_state.search_barcode = "3057640111019"
+    #         st.session_state.search_now = True
+    # with col9:
+    #     if st.button(f"🥣 Weet-Bix", key="test9", use_container_width=True):
+    #         st.session_state.search_barcode = "9300675037031"
+    #         st.session_state.search_now = True
     
     st.markdown("---")
     
