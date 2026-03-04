@@ -1,9 +1,8 @@
-# app.py - COMPLETE VERSION WITH ENVIRONMENT VARIABLES
+
 # ==================== LOAD ENVIRONMENT VARIABLES ====================
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env file
 load_dotenv()
 
 # Get API keys from environment variables
@@ -18,9 +17,9 @@ if MONGODB_URI:
 
 # Print confirmation (can be removed in production)
 if GEMINI_API_KEY_SYMPTOM and GEMINI_API_KEY_FOOD and GEMINI_API_KEY_MEAL:
-    print("✅ Environment variables loaded successfully")
+    print(" Environment variables loaded successfully")
 else:
-    print("⚠️ Some environment variables are missing. Check your .env file")
+    print(" Some environment variables are missing. Check your .env file")
 
 import streamlit as st
 import pandas as pd
@@ -4353,6 +4352,7 @@ IMPORTANT RULES:
 
 # ==================== VOICE ASSISTANT PAGE ====================
 # ==================== VOICE ASSISTANT PAGE - FIXED VERSION ====================
+# ==================== VOICE ASSISTANT PAGE WITH VOICE OUTPUT ====================
 elif page == " Voice Assistant":
     st.markdown('<div class="main-title"> 🎤 Voice Assistant</div>', unsafe_allow_html=True)
     
@@ -4363,6 +4363,8 @@ elif page == " Voice Assistant":
         st.session_state.ai_response = ""
     if 'audio_bytes' not in st.session_state:
         st.session_state.audio_bytes = None
+    if 'speaking' not in st.session_state:
+        st.session_state.speaking = False
     
     col1, col2 = st.columns([2, 1])
     
@@ -4457,20 +4459,84 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
             with st.container(border=True):
                 st.markdown(st.session_state.ai_response)
             
-            col_d1, col_d2 = st.columns(2)
-            with col_d1:
-                st.download_button(
-                    label="📥 Download Answer",
-                    data=st.session_state.ai_response,
-                    file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
-                    mime="text/plain"
-                )
-            with col_d2:
-                if st.button("🔄 New Question", use_container_width=True):
-                    st.session_state.voice_question = ""
-                    st.session_state.ai_response = ""
-                    st.session_state.audio_bytes = None
-                    st.rerun()
+            # ========== VOICE OUTPUT SECTION ==========
+            st.markdown("### 🔊 Step 4: Listen to Answer")
+            
+            # Text-to-speech using browser's speech synthesis
+            col_s1, col_s2 = st.columns(2)
+            
+            with col_s1:
+                if st.button("🔊 Play Answer", type="primary", use_container_width=True):
+                    # JavaScript for text-to-speech
+                    speech_js = f"""
+                    <script>
+                    var utterance = new SpeechSynthesisUtterance(`{st.session_state.ai_response}`);
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    utterance.lang = 'en-US';
+                    window.speechSynthesis.speak(utterance);
+                    </script>
+                    """
+                    st.components.v1.html(speech_js, height=0)
+                    st.success("🔊 Speaking...")
+            
+            with col_s2:
+                if st.button("⏹️ Stop", use_container_width=True):
+                    stop_js = """
+                    <script>
+                    window.speechSynthesis.cancel();
+                    </script>
+                    """
+                    st.components.v1.html(stop_js, height=0)
+                    st.info("⏹️ Stopped")
+            
+            # Alternative: Audio player with generated speech (if you want to save as file)
+            st.markdown("#### Or download as audio:")
+            
+            # Create a simple WAV file placeholder (in real implementation, you'd use gTTS or pyttsx3)
+            if st.button("🔊 Generate Audio File", use_container_width=True):
+                try:
+                    # You can use gTTS (Google Text-to-Speech) for better quality
+                    # First, install: pip install gtts
+                    from gtts import gTTS
+                    import io
+                    
+                    tts = gTTS(text=st.session_state.ai_response, lang='en')
+                    audio_bytes_io = io.BytesIO()
+                    tts.write_to_fp(audio_bytes_io)
+                    audio_bytes = audio_bytes_io.getvalue()
+                    
+                    st.audio(audio_bytes, format='audio/mp3')
+                    
+                    st.download_button(
+                        label="📥 Download Audio",
+                        data=audio_bytes,
+                        file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.mp3",
+                        mime="audio/mp3",
+                        use_container_width=True
+                    )
+                except ImportError:
+                    st.warning("⚠️ Audio generation requires gTTS. Install with: pip install gtts")
+                except Exception as e:
+                    st.error(f"❌ Error generating audio: {str(e)}")
+            
+            # Download text button
+            st.markdown("#### Download as Text:")
+            st.download_button(
+                label="📥 Download Answer (Text)",
+                data=st.session_state.ai_response,
+                file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+                mime="text/plain",
+                use_container_width=True
+            )
+            
+            # New question button
+            if st.button("🔄 New Question", use_container_width=True):
+                st.session_state.voice_question = ""
+                st.session_state.ai_response = ""
+                st.session_state.audio_bytes = None
+                st.rerun()
     
     with col2:
         st.markdown("### 📊 Status")
@@ -4480,6 +4546,8 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
             st.metric("Word count", words)
         if st.session_state.ai_response:
             st.success("✅ Answer ready")
+            words = len(st.session_state.ai_response.split())
+            st.metric("Response length", f"{words} words")
         
         st.markdown("---")
         st.markdown("### 💡 Tips")
@@ -4489,9 +4557,23 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
         3. Click **stop** (■)
         4. Click **Convert to Text**
         5. Edit if needed
-        6. Get AI answer
+        6. Click **Generate Answer**
+        7. Click **Play Answer** to hear it
         """)
-
+        
+        st.markdown("---")
+        st.markdown("### 🎯 Sample Questions")
+        sample_qs = [
+            "What are the symptoms of B12 deficiency?",
+            "Which foods are rich in Vitamin B12?",
+            "How much B12 should I take daily?",
+            "Can B12 deficiency cause fatigue?",
+            "Is 1000mcg B12 too much?"
+        ]
+        for i, q in enumerate(sample_qs):
+            if st.button(q, key=f"sample_q_{i}", use_container_width=True):
+                st.session_state.voice_question = q
+                st.rerun()
 # # ==================== RESULTS PAGE ====================
 
 # ==================== RESULTS PAGE WITH PDF DOWNLOAD ====================
@@ -5479,18 +5561,18 @@ elif page == " Food Scanner":
                                 )
                                 
                             else:
-                                # st.warning("⚠️ AI analysis unavailable. Using local database instead.")
+                                # st.warning(" AI analysis unavailable. Using local database instead.")
                                 analyze_b12_food_local(food_input)
                             
                     except Exception as e:
-                        st.warning(f"⚠️ AI service error. Using local database instead.")
+                        st.warning(f" AI service error. Using local database instead.")
                         analyze_b12_food_local(food_input)
             else:
                 st.warning("Please describe your meal first")
     
     # ==================== TAB 2: PHOTO UPLOAD WITH AI ====================
     with tab2:
-        st.markdown("### 📸 Upload Food Photo")
+        st.markdown("###  Upload Food Photo")
         st.info("Take a photo of your meal and AI will identify B12-rich foods")
         
         uploaded_file = st.file_uploader(
