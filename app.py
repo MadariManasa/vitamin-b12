@@ -2746,7 +2746,7 @@ if page == " Dashboard":
             col1, col2 = st.columns(2)
             
             with col1:
-                if st.button("✅ Done - Mark Complete", key=f"complete_{reminder['id']}", use_container_width=True):
+                if st.button("Done - Mark Complete", key=f"complete_{reminder['id']}", use_container_width=True):
                     # Mark as completed
                     reminder['completed_today'] = True
                     reminder['completed_at'] = datetime.now().strftime("%H:%M")
@@ -2754,7 +2754,7 @@ if page == " Dashboard":
                     
                     # Add success notification
                     add_notification(
-                        title="✅ Reminder Completed",
+                        title=" Reminder Completed",
                         message=f"You completed: {reminder['text']}",
                         type="success"
                     )
@@ -2764,14 +2764,14 @@ if page == " Dashboard":
                     st.rerun()
             
             with col2:
-                if st.button("⏰ Snooze 5 min", key=f"snooze_{reminder['id']}", use_container_width=True):
+                if st.button(" Snooze 5 min", key=f"snooze_{reminder['id']}", use_container_width=True):
                     # Snooze for 5 minutes
                     snooze_time = datetime.now() + timedelta(minutes=5)
                     reminder['snoozed_until'] = snooze_time.strftime("%H:%M")
                     
                     # Add snooze notification
                     add_notification(
-                        title="⏰ Reminder Snoozed",
+                        title=" Reminder Snoozed",
                         message=f"{reminder['text']} - Snoozed until {snooze_time.strftime('%I:%M %p')}",
                         type="info"
                     )
@@ -2836,7 +2836,7 @@ if page == " Dashboard":
                     
                     # Also add to notifications
                     add_notification(
-                        title="⏰ REMINDER",
+                        title=" REMINDER",
                         message=reminder['text'],
                         type="warning"
                     )
@@ -2851,7 +2851,7 @@ if page == " Dashboard":
         st.session_state.notifications = []
         # Add welcome notification
         add_notification(
-            title="👋 Welcome to B12 Assistant!",
+            title=" Welcome to B12 Assistant!",
             message="Explore features using the sidebar menu. Complete your assessment to get started.",
             type="info"
         )
@@ -2923,7 +2923,7 @@ if page == " Dashboard":
             # Notification bell with popover
             unread = get_unread_count()
             
-            with st.popover("🔔 Notifications", use_container_width=True):
+            with st.popover("Notifications", use_container_width=True):
                 if st.session_state.notifications:
                     # Sort by newest first
                     sorted_notifs = sorted(st.session_state.notifications, 
@@ -2981,12 +2981,12 @@ if page == " Dashboard":
                     col_notif1, col_notif2, col_notif3 = st.columns(3)
                     
                     with col_notif1:
-                        if st.button("✓ Mark All Read", key="mark_all_read_notifications", use_container_width=True):
+                        if st.button(" Mark All Read", key="mark_all_read_notifications", use_container_width=True):
                             mark_all_read()
                             st.rerun()
                     
                     with col_notif2:
-                        if st.button("🗑️ Clear Read", key="clear_read_notifications", use_container_width=True):
+                        if st.button(" Clear Read", key="clear_read_notifications", use_container_width=True):
                             # Remove all read notifications
                             st.session_state.notifications = [
                                 n for n in st.session_state.notifications 
@@ -2995,9 +2995,9 @@ if page == " Dashboard":
                             st.rerun()
                     
                     # with col_notif3:
-                    #     if st.button("🗑️ Delete All", key="delete_all_notifications", use_container_width=True):
+                    #     if st.button(" Delete All", key="delete_all_notifications", use_container_width=True):
                     #         # Show confirmation
-                    #         if st.checkbox("⚠️ Confirm delete ALL notifications", key="confirm_delete_all_notifications"):
+                    #         if st.checkbox(" Confirm delete ALL notifications", key="confirm_delete_all_notifications"):
                     #             st.session_state.notifications = []
                     #             st.rerun()
                 else:
@@ -3052,7 +3052,7 @@ if page == " Dashboard":
                     border: 2px solid rgba(251, 191, 36, 0.3);
                     margin-bottom: 25px;
                 ">
-                    <strong style="color: #fbbf24;"> 🔔 {temp_count} Unsaved Activities</strong><br>
+                    <strong style="color: #fbbf24;">  {temp_count} Unsaved Activities</strong><br>
                     <span style="color: #fed7aa; font-size: 0.9rem;">Login or signup to save your progress to the cloud</span>
                 </div>
                 """, unsafe_allow_html=True)
@@ -3149,14 +3149,14 @@ if page == " Dashboard":
     with sup_col1:
         # Supplement type selection
         supplement_type = st.selectbox(
-            "💊 Supplement Type",
+            " Supplement Type",
             ["Methylcobalamin", "Cyanocobalamin", "B-Complex", "Multivitamin", "Other"],
             key="supplement_type_select"
         )
     
     with sup_col2:
         supplement_dose = st.number_input(
-            "💊 Dose (mcg)",
+            " Dose (mcg)",
             min_value=0,
             max_value=5000,
             value=1000,
@@ -3166,7 +3166,7 @@ if page == " Dashboard":
     
     with sup_col3:
         supplement_time = st.time_input(
-            "⏰ Time Taken",
+            " Time Taken",
             value=datetime.now().time(),
             key="supplement_time_input"
         )
@@ -3174,13 +3174,13 @@ if page == " Dashboard":
     # Display current supplement status
     if st.session_state.supplement_tracker['taken']:
         # Show completed status
-        st.success(f"✅ You've taken your B12 supplement today at {st.session_state.supplement_tracker['time_taken']}!")
+        st.success(f" You've taken your B12 supplement today at {st.session_state.supplement_tracker['time_taken']}!")
         st.metric("Current Streak", f"{st.session_state.supplement_tracker['streak']} days")
     else:
         # Show button to mark as taken
-        st.info("📝 You haven't taken your supplement today yet.")
+        st.info(" You haven't taken your supplement today yet.")
         
-        if st.button("✅ I've Taken My Supplement", key="mark_supplement_taken", use_container_width=True, type="primary"):
+        if st.button(" I've Taken My Supplement", key="mark_supplement_taken", use_container_width=True, type="primary"):
             # Mark as taken
             st.session_state.supplement_tracker['taken'] = True
             st.session_state.supplement_tracker['time_taken'] = supplement_time.strftime("%I:%M %p")
@@ -3215,7 +3215,7 @@ if page == " Dashboard":
             
             # Add notification
             add_notification(
-                title="✅ Supplement Taken",
+                title=" Supplement Taken",
                 message=f"You took {supplement_dose}mcg {supplement_type}",
                 type="success"
             )
@@ -3224,9 +3224,9 @@ if page == " Dashboard":
     
     # Show supplement history
     if st.session_state.supplement_tracker.get('history'):
-        with st.expander("📜 Supplement History"):
+        with st.expander(" Supplement History"):
             for entry in st.session_state.supplement_tracker['history'][-7:]:  # Last 7 days
-                st.markdown(f"📅 {entry['date']} at {entry['time']} - {entry['type']} ({entry['dose']} mcg)")
+                st.markdown(f" {entry['date']} at {entry['time']} - {entry['type']} ({entry['dose']} mcg)")
     
     st.markdown("---")
     
@@ -3408,7 +3408,7 @@ if page == " Dashboard":
                 with col_action1:
                     # MARK READ BUTTON - Only show if not completed today
                     if not is_completed:
-                        if st.button("✅ Done", key=f"mark_{rem['id']}_{i}", use_container_width=True):
+                        if st.button("Done", key=f"mark_{rem['id']}_{i}", use_container_width=True):
                             # Mark as completed
                             rem['completed_today'] = True
                             rem['completed_at'] = datetime.now().strftime("%H:%M")
@@ -3423,7 +3423,7 @@ if page == " Dashboard":
                             })
                             
                             add_notification(
-                                title="✅ Reminder Completed",
+                                title=" Reminder Completed",
                                 message=f"You completed: {rem['text']}",
                                 type="success"
                             )
@@ -3450,7 +3450,7 @@ if page == " Dashboard":
         col_bulk1, col_bulk2, col_bulk3 = st.columns(3)
         
         with col_bulk1:
-            if st.button("✅ Mark All Done", key="mark_all_done_reminders_bulk", use_container_width=True):
+            if st.button(" Mark All Done", key="mark_all_done_reminders_bulk", use_container_width=True):
                 for rem in active_reminders:
                     if not (rem.get('completed_today', False) and rem.get('last_triggered') == today):
                         rem['completed_today'] = True
@@ -3465,33 +3465,33 @@ if page == " Dashboard":
                             'time': rem['completed_at']
                         })
                 add_notification(
-                    title="✅ All Reminders Completed",
+                    title=" All Reminders Completed",
                     message="You've marked all reminders as done for today!",
                     type="success"
                 )
                 st.rerun()
         
         with col_bulk2:
-            if st.button("🗑️ Clear Completed", key="clear_completed_reminders_bulk", use_container_width=True):
+            if st.button(" Clear Completed", key="clear_completed_reminders_bulk", use_container_width=True):
                 # Remove only completed reminders for today
                 st.session_state.user_reminders = [
                     r for r in st.session_state.user_reminders 
                     if not (r.get('completed_today', False) and r.get('last_triggered') == today)
                 ]
                 add_notification(
-                    title="🗑️ Completed Reminders Cleared",
+                    title=" Completed Reminders Cleared",
                     message="All completed reminders have been removed.",
                     type="info"
                 )
                 st.rerun()
         
         with col_bulk3:
-            if st.button("🗑️ Delete All", key="delete_all_reminders_bulk", use_container_width=True):
+            if st.button(" Delete All", key="delete_all_reminders_bulk", use_container_width=True):
                 # Show confirmation
-                if st.checkbox("⚠️ Confirm delete ALL reminders", key="confirm_delete_all_reminders_bulk"):
+                if st.checkbox(" Confirm delete ALL reminders", key="confirm_delete_all_reminders_bulk"):
                     st.session_state.user_reminders = []
                     add_notification(
-                        title="🗑️ All Reminders Deleted",
+                        title=" All Reminders Deleted",
                         message="Your reminder list has been cleared.",
                         type="warning"
                     )
@@ -3510,24 +3510,24 @@ if page == " Dashboard":
     with sum_col1:
         # Supplement status
         if st.session_state.supplement_tracker['taken']:
-            st.success(f"✅ Supplement: Taken at {st.session_state.supplement_tracker['time_taken']}")
+            st.success(f" Supplement: Taken at {st.session_state.supplement_tracker['time_taken']}")
         else:
-            st.warning("⏰ Supplement: Not taken yet")
+            st.warning(" Supplement: Not taken yet")
     
     with sum_col2:
         # Reminder status
         if active_reminders:
-            st.info(f"📋 Reminders: {completed_today}/{reminder_count} completed")
+            st.info(f" Reminders: {completed_today}/{reminder_count} completed")
         else:
-            st.info("📋 Reminders: None scheduled")
+            st.info(" Reminders: None scheduled")
     
     with sum_col3:
         # Streak
         streak = st.session_state.supplement_tracker.get('streak', 0)
         if streak > 0:
-            st.success(f"🔥 Streak: {streak} days")
+            st.success(f" Streak: {streak} days")
         else:
-            st.info("🔥 Streak: Start today!")
+            st.info(" Streak: Start today!")
     
     # ==================== MAIN CONTENT ====================
     content_col1, content_col2 = st.columns([2.5, 1.5])
@@ -3567,7 +3567,7 @@ if page == " Dashboard":
             q_diet = st.selectbox("**Your Diet Type**", ["Omnivore", "Vegetarian", "Vegan", "Pescetarian"], key="q_diet")
             q_fatigue = st.checkbox("**Do you feel tired often?**", key="q_fatigue")
             
-            if st.button("⚡ Calculate Risk Score", key="quick_risk_calc", type="primary", use_container_width=True):
+            if st.button(" Calculate Risk Score", key="quick_risk_calc", type="primary", use_container_width=True):
                 quick_score = 0
                 risk_factors = []
                 
@@ -3739,7 +3739,7 @@ if page == " Dashboard":
     
     if st.session_state.get('user_reminders') or st.session_state.supplement_tracker.get('taken'):
         # Supplement summary
-        sup_status = "✅ Taken" if st.session_state.supplement_tracker['taken'] else "❌ Not taken"
+        sup_status = " Taken" if st.session_state.supplement_tracker['taken'] else "❌ Not taken"
         
         # Reminder summary
         if active_reminders:
@@ -3865,7 +3865,7 @@ if page == " Dashboard":
 
 # ==================== LAB REPORTS PAGE ====================
 elif page == " Lab Reports":
-    st.markdown('<div class="main-title"> 📊 Lab Report Analysis</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">  Lab Report Analysis</div>', unsafe_allow_html=True)
     
     st.markdown("""
     <div style="
@@ -3890,7 +3890,7 @@ elif page == " Lab Reports":
         )
     
     with col2:
-        st.markdown("**📋 Supported:**")
+        st.markdown("** Supported:**")
         st.write("- PDF files only")
         st.write("- Max size: 10MB")
     
@@ -3907,7 +3907,7 @@ elif page == " Lab Reports":
             st.metric("File Size", file_size)
         
         # Preview option (collapsed by default)
-        with st.expander("📄 Preview PDF Text"):
+        with st.expander(" Preview PDF Text"):
             try:
                 from utils import extract_text_from_pdf
                 text = extract_text_from_pdf(uploaded_file)
@@ -3916,15 +3916,15 @@ elif page == " Lab Reports":
                 st.info("Could not extract text. The file may be scanned.")
         
         # AI Analysis button
-        if st.button("🔍 Analyze Lab Report", type="primary", use_container_width=True):
-            with st.spinner("🤖 AI is analyzing your lab report..."):
+        if st.button(" Analyze Lab Report", type="primary", use_container_width=True):
+            with st.spinner(" AI is analyzing your lab report..."):
                 try:
                     # Use Gemini to analyze PDF
                     ai_result = analyze_lab_pdf_with_gemini(uploaded_file)
                     
                     if ai_result.get('success'):
                         st.markdown("---")
-                        st.markdown("### 📋 Your Lab Report Results")
+                        st.markdown("###  Your Lab Report Results")
                         
                         # Get B12 value safely
                         b12_value = ai_result.get('b12_value')
@@ -3959,7 +3959,7 @@ elif page == " Lab Reports":
                         # Row 1: B12 Level
                         col_r1, col_r2 = st.columns(2)
                         with col_r1:
-                            st.markdown("**📊 B12 Level**")
+                            st.markdown("** B12 Level**")
                         with col_r2:
                             if b12_val:
                                 st.markdown(f"**{b12_val} pg/mL**")
@@ -3971,7 +3971,7 @@ elif page == " Lab Reports":
                         # Row 2: Status
                         col_r1, col_r2 = st.columns(2)
                         with col_r1:
-                            st.markdown("**⚠️ Status**")
+                            st.markdown("** Status**")
                         with col_r2:
                             st.markdown(f"**{status}**")
                         
@@ -3980,39 +3980,39 @@ elif page == " Lab Reports":
                         # Row 3: Normal Range
                         col_r1, col_r2 = st.columns(2)
                         with col_r1:
-                            st.markdown("**📏 Normal Range**")
+                            st.markdown("** Normal Range**")
                         with col_r2:
                             st.markdown("**200-900 pg/mL**")
                         
                         st.markdown("---")
                         
                         # ========== RECOMMENDATIONS TABLE ==========
-                        st.markdown("### 💡 Recommendations")
+                        st.markdown("###  Recommendations")
                         
                         # Get recommendations based on status
                         if status == "DEFICIENT":
                             recs = [
-                                ("💊 Supplement", "High-dose B12 (2000mcg daily)"),
-                                ("🥗 Diet", "Liver, clams, sardines, eggs"),
-                                ("👨‍⚕️ Doctor", "Consult within 1 week")
+                                (" Supplement", "High-dose B12 (2000mcg daily)")
+                                (" Diet", "Liver, clams, sardines, eggs"),
+                                (" Doctor", "Consult within 1 week")
                             ]
                         elif status == "BORDERLINE":
                             recs = [
-                                ("💊 Supplement", "B12 1000mcg daily"),
-                                ("🥗 Diet", "Eggs, dairy, fish 3-4x/week"),
-                                ("👨‍⚕️ Doctor", "Follow-up in 2 months")
+                                (" Supplement", "B12 1000mcg daily"),
+                                (" Diet", "Eggs, dairy, fish 3-4x/week"),
+                                (" Doctor", "Follow-up in 2 months")
                             ]
                         elif status == "NORMAL":
                             recs = [
-                                ("💊 Supplement", "Maintenance dose (500mcg)"),
-                                ("🥗 Diet", "Continue balanced diet"),
-                                ("👨‍⚕️ Doctor", "Annual check-up")
+                                (" Supplement", "Maintenance dose (500mcg)"),
+                                (" Diet", "Continue balanced diet"),
+                                (" Doctor", "Annual check-up")
                             ]
                         else:
                             recs = [
-                                ("💊 Supplement", "Consult doctor for testing"),
-                                ("🥗 Diet", "Include B12-rich foods"),
-                                ("👨‍⚕️ Doctor", "Get blood test done")
+                                (" Supplement", "Consult doctor for testing"),
+                                (" Diet", "Include B12-rich foods"),
+                                (" Doctor", "Get blood test done")
                             ]
                         
                         # Display recommendations as a clean table
@@ -4039,7 +4039,7 @@ elif page == " Lab Reports":
                                 'filename': uploaded_file.name
                             }
                             st.session_state.lab_reports.append(report_entry)
-                            st.success("✅ Saved")
+                            st.success(" Saved")
                         
                         with col_btn2:
                             # Download as text
@@ -4059,24 +4059,24 @@ RECOMMENDATIONS:
 • Doctor: {recs[2][1]}
                             """
                             st.download_button(
-                                label="📥 Download",
+                                label=" Download",
                                 data=report_text,
                                 file_name=f"b12_report_{datetime.now().strftime('%Y%m%d')}.txt",
                                 mime="text/plain"
                             )
                         
                         with col_btn3:
-                            if st.button("🔄 New Analysis"):
+                            if st.button(" New Analysis"):
                                 st.rerun()
                         
                     else:
-                        st.error(f"❌ Analysis failed: {ai_result.get('error', 'Unknown error')}")
+                        st.error(f" Analysis failed: {ai_result.get('error', 'Unknown error')}")
                         
                 except Exception as e:
-                    st.error(f"❌ Error: {str(e)}")
+                    st.error(f" Error: {str(e)}")
         
         # Manual entry option
-        with st.expander("📝 Enter Value Manually"):
+        with st.expander("Enter Value Manually"):
             manual_b12 = st.number_input("Enter B12 Level (pg/mL)", 0, 2000, 0)
             if manual_b12 > 0 and st.button("Save Manual Entry"):
                 # Determine status
@@ -4094,7 +4094,7 @@ RECOMMENDATIONS:
                     'date': datetime.now().strftime("%Y-%m-%d")
                 }
                 st.session_state.lab_reports.append(report_entry)
-                st.success(f"✅ Saved: {manual_b12} pg/mL")
+                st.success(f" Saved: {manual_b12} pg/mL")
     
     else:
         # Welcome screen
@@ -4116,7 +4116,7 @@ RECOMMENDATIONS:
     # ==================== HISTORY SECTION ====================
     if st.session_state.lab_reports:
         st.markdown("---")
-        st.markdown("### 📋 Recent Analyses")
+        st.markdown("###  Recent Analyses")
         
         # Show last 3 reports
         for report in st.session_state.lab_reports[-3:]:
@@ -4257,7 +4257,7 @@ IMPORTANT RULES:
                             description=f"Simple meal plan generated for {diet_for_plan} diet"
                         )
                         
-                        st.success("✅ Your simple 7-day meal plan is ready!")
+                        st.success(" Your meal plan is ready!")
                         # st.balloons()
                     else:
                         st.error("Could not connect to the AI service. Please try again.")
@@ -4370,7 +4370,7 @@ elif page == " Voice Assistant":
     
     with col1:
         # ========== VOICE INPUT ==========
-        st.markdown("### 🎤 Step 1: Record Your Voice")
+        st.markdown("###  Step 1: Record Your Voice")
         
         # Use Streamlit's built-in audio input
         audio_file = st.audio_input(
@@ -4384,10 +4384,10 @@ elif page == " Voice Assistant":
             audio_bytes = audio_file.read()
             st.audio(audio_bytes)
             st.session_state.audio_bytes = audio_bytes
-            st.success("✅ Recording captured! Click 'Convert to Text' below.")
+            st.success(" Recording captured! Click 'Convert to Text' below.")
         
         # Convert button
-        if st.button("🔄 Convert to Text", type="secondary", disabled=not st.session_state.audio_bytes):
+        if st.button("Convert to Text", type="secondary", disabled=not st.session_state.audio_bytes):
             with st.spinner("Converting speech to text..."):
                 try:
                     import speech_recognition as sr
@@ -4402,18 +4402,18 @@ elif page == " Voice Assistant":
                         text = recognizer.recognize_google(audio_data)
                         
                         st.session_state.voice_question = text
-                        st.success("✅ Voice converted to text!")
+                        st.success(" Voice converted to text!")
                         st.rerun()
                         
                 except sr.UnknownValueError:
-                    st.error("❌ Could not understand audio. Please try again.")
+                    st.error(" Could not understand audio. Please try again.")
                 except sr.RequestError:
-                    st.error("❌ Speech service error. Check internet connection.")
+                    st.error(" Speech service error. Check internet connection.")
                 except Exception as e:
-                    st.error(f"❌ Error: {str(e)}")
+                    st.error(f" Error: {str(e)}")
         
         # ========== TEXT BOX ==========
-        st.markdown("### 📝 Step 2: Your Question")
+        st.markdown("###  Step 2: Your Question")
         
         question_text = st.text_area(
             "Edit your question here:",
@@ -4427,9 +4427,9 @@ elif page == " Voice Assistant":
             st.session_state.voice_question = question_text
         
         # ========== GET AI RESPONSE ==========
-        st.markdown("### 🤖 Step 3: Get AI Response")
+        st.markdown("###  Step 3: Get AI Response")
         
-        if st.button("🚀 Generate Answer", type="primary", use_container_width=True, disabled=not st.session_state.voice_question):
+        if st.button(" Generate Answer", type="primary", use_container_width=True, disabled=not st.session_state.voice_question):
             with st.spinner("AI is thinking..."):
                 try:
                     from utils import setup_gemini_api
@@ -4444,29 +4444,29 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
                         
                         response = model.generate_content(prompt)
                         st.session_state.ai_response = response.text
-                        st.success("✅ Answer ready!")
+                        st.success(" Answer ready!")
                         st.rerun()
                     else:
                         st.error("AI service unavailable")
                         
                 except Exception as e:
-                    st.error(f"❌ Error: {str(e)}")
+                    st.error(f" Error: {str(e)}")
         
         # ========== SHOW ANSWER ==========
         if st.session_state.ai_response:
             st.markdown("---")
-            st.markdown("### 💬 Answer")
+            st.markdown("###  Answer")
             with st.container(border=True):
                 st.markdown(st.session_state.ai_response)
             
             # ========== VOICE OUTPUT SECTION ==========
-            st.markdown("### 🔊 Step 4: Listen to Answer")
+            st.markdown("###  Step 4: Listen to Answer")
             
             # Text-to-speech using browser's speech synthesis
             col_s1, col_s2 = st.columns(2)
             
             with col_s1:
-                if st.button("🔊 Play Answer", type="primary", use_container_width=True):
+                if st.button(" Play Answer", type="primary", use_container_width=True):
                     # JavaScript for text-to-speech
                     speech_js = f"""
                     <script>
@@ -4479,23 +4479,23 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
                     </script>
                     """
                     st.components.v1.html(speech_js, height=0)
-                    st.success("🔊 Speaking...")
+                    st.success(" Speaking...")
             
             with col_s2:
-                if st.button("⏹️ Stop", use_container_width=True):
+                if st.button(" Stop", use_container_width=True):
                     stop_js = """
                     <script>
                     window.speechSynthesis.cancel();
                     </script>
                     """
                     st.components.v1.html(stop_js, height=0)
-                    st.info("⏹️ Stopped")
+                    st.info(" Stopped")
             
             # Alternative: Audio player with generated speech (if you want to save as file)
             st.markdown("#### Or download as audio:")
             
             # Create a simple WAV file placeholder (in real implementation, you'd use gTTS or pyttsx3)
-            if st.button("🔊 Generate Audio File", use_container_width=True):
+            if st.button(" Generate Audio File", use_container_width=True):
                 try:
                     # You can use gTTS (Google Text-to-Speech) for better quality
                     # First, install: pip install gtts
@@ -4510,21 +4510,21 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
                     st.audio(audio_bytes, format='audio/mp3')
                     
                     st.download_button(
-                        label="📥 Download Audio",
+                        label=" Download Audio",
                         data=audio_bytes,
                         file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.mp3",
                         mime="audio/mp3",
                         use_container_width=True
                     )
                 except ImportError:
-                    st.warning("⚠️ Audio generation requires gTTS. Install with: pip install gtts")
+                    st.warning(" Audio generation requires gTTS. Install with: pip install gtts")
                 except Exception as e:
-                    st.error(f"❌ Error generating audio: {str(e)}")
+                    st.error(f" Error generating audio: {str(e)}")
             
             # Download text button
             st.markdown("#### Download as Text:")
             st.download_button(
-                label="📥 Download Answer (Text)",
+                label=" Download Answer (Text)",
                 data=st.session_state.ai_response,
                 file_name=f"b12_answer_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
                 mime="text/plain",
@@ -4532,29 +4532,29 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
             )
             
             # New question button
-            if st.button("🔄 New Question", use_container_width=True):
+            if st.button(" New Question", use_container_width=True):
                 st.session_state.voice_question = ""
                 st.session_state.ai_response = ""
                 st.session_state.audio_bytes = None
                 st.rerun()
     
     with col2:
-        st.markdown("### 📊 Status")
+        st.markdown("###  Status")
         if st.session_state.voice_question:
-            st.success("✅ Question ready")
+            st.success(" Question ready")
             words = len(st.session_state.voice_question.split())
             st.metric("Word count", words)
         if st.session_state.ai_response:
-            st.success("✅ Answer ready")
+            st.success(" Answer ready")
             words = len(st.session_state.ai_response.split())
             st.metric("Response length", f"{words} words")
         
         st.markdown("---")
-        st.markdown("### 💡 Tips")
+        st.markdown("### Tips")
         st.markdown("""
-        1. Click **record button** (🎤)
+        1. Click **record button** 
         2. Speak clearly
-        3. Click **stop** (■)
+        3. Click **stop** 
         4. Click **Convert to Text**
         5. Edit if needed
         6. Click **Generate Answer**
@@ -4562,7 +4562,7 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
         """)
         
         st.markdown("---")
-        st.markdown("### 🎯 Sample Questions")
+        st.markdown("### Sample Questions")
         sample_qs = [
             "What are the symptoms of B12 deficiency?",
             "Which foods are rich in Vitamin B12?",
@@ -4578,7 +4578,7 @@ Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
 
 # ==================== RESULTS PAGE WITH PDF DOWNLOAD ====================
 elif page == " Results":
-    st.markdown('<div class="main-title"> 📊 Your Risk Assessment & Lifestyle Plan</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">  Your Risk Assessment & Lifestyle Plan</div>', unsafe_allow_html=True)
     
     if not st.session_state.user_data:
         st.warning("Please complete the assessment first!")
@@ -4626,7 +4626,7 @@ elif page == " Results":
             b12_display = "Not tested"
         
         # ==================== RISK DISPLAY HEADER ====================
-        st.markdown("### 📈 Your Risk Assessment Summary")
+        st.markdown("###  Your Risk Assessment Summary")
         
         # Create 3 columns for the main metrics
         col1, col2, col3 = st.columns(3)
@@ -4718,7 +4718,7 @@ elif page == " Results":
                 backdrop-filter: blur(10px);
                 height: 180px;
             ">
-                <h4 style="margin: 0 0 10px 0; color: #fbbf24;">💉 B12 Status</h4>
+                <h4 style="margin: 0 0 10px 0; color: #fbbf24;"> B12 Status</h4>
                 <div style="background: {b12_bg}; padding: 10px; border-radius: 5px; text-align: center; border-left: 3px solid {b12_color};">
                     <p style="margin: 0; font-size: 1.1rem; font-weight: bold; color: {b12_color};">{b12_display}</p>
                     <p style="margin: 2px 0 0 0; font-size: 0.9rem; color: {b12_color};">{b12_status}</p>
@@ -4730,12 +4730,12 @@ elif page == " Results":
         st.markdown("---")
         
         # ==================== VISUAL CHARTS ====================
-        st.markdown("## 📊 Visual Risk Analysis")
+        st.markdown("##  Visual Risk Analysis")
         
-        tab1, tab2, tab3 = st.tabs(["📈 Risk Breakdown Chart", "🥗 Diet Impact Meter", "⏱️ Treatment Timeline"])
+        tab1, tab2, tab3 = st.tabs([" Risk Breakdown Chart", " Diet Impact Meter", "⏱ Treatment Timeline"])
         
         with tab1:
-            st.markdown("### 🥧 What's Contributing to Your Risk")
+            st.markdown("###  What's Contributing to Your Risk")
             
             # Calculate risk factors
             risk_factors = {}
@@ -4808,7 +4808,7 @@ elif page == " Results":
                 st.plotly_chart(fig, use_container_width=True)
             
             with col_legend1:
-                st.markdown("#### 📋 Risk Factors")
+                st.markdown("####  Risk Factors")
                 for factor, value in risk_factors.items():
                     color = "#EF4444" if value > 30 else "#F59E0B" if value > 20 else "#10B981"
                     st.markdown(f"""
@@ -4819,7 +4819,7 @@ elif page == " Results":
                     """, unsafe_allow_html=True)
         
         with tab2:
-            st.markdown("### 🎯 Diet Impact on B12 Levels")
+            st.markdown("###  Diet Impact on B12 Levels")
             
             col_gauge, col_info = st.columns([2, 1])
             
@@ -4882,7 +4882,7 @@ elif page == " Results":
                 """, unsafe_allow_html=True)
         
         with tab3:
-            st.markdown("### ⏱️ Your 6-Month Treatment Timeline")
+            st.markdown("###  Your 6-Month Treatment Timeline")
             
             # Create timeline based on risk level
             if risk_level == 'High':
@@ -4943,12 +4943,12 @@ elif page == " Results":
         st.markdown("---")
         
         # ==================== LIFESTYLE PLAN TABLE ====================
-        st.markdown("## 📋 Your Personalized Lifestyle Plan")
+        st.markdown("##  Your Personalized Lifestyle Plan")
         
         # Create lifestyle plan based on risk level
         if risk_level == 'High':
             lifestyle_data = pd.DataFrame({
-                'Category': ['💊 Medication', '🥗 Diet Plan', '🏃 Lifestyle', '👨‍⚕️ Doctor Consult', '📊 Monitoring', '🎯 Goals'],
+                'Category': [' Medication', ' Diet Plan', ' Lifestyle', 'Doctor Consult', ' Monitoring', ' Goals'],
                 'Daily/Weekly': [
                     'Methylcobalamin 2000mcg daily\nB12 injections weekly',
                     'Liver, clams, sardines (3-4x/week)\nEggs, dairy daily\nFortified foods',
@@ -4962,7 +4962,7 @@ elif page == " Results":
             })
         elif risk_level == 'Medium':
             lifestyle_data = pd.DataFrame({
-                'Category': ['💊 Medication', '🥗 Diet Plan', '🏃 Lifestyle', '👨‍⚕️ Doctor Consult', '📊 Monitoring', '🎯 Goals'],
+                'Category': [' Medication', ' Diet Plan', ' Lifestyle', ' Doctor Consult', ' Monitoring', ' Goals'],
                 'Daily/Weekly': [
                     'Methylcobalamin 1000mcg daily',
                     'Eggs (2/day)\nMilk/Yogurt daily\nFish 2-3x/week',
@@ -4976,7 +4976,7 @@ elif page == " Results":
             })
         else:
             lifestyle_data = pd.DataFrame({
-                'Category': ['💊 Medication', '🥗 Diet Plan', '🏃 Lifestyle', '👨‍⚕️ Doctor Consult', '📊 Monitoring', '🎯 Goals'],
+                'Category': [' Medication', ' Diet Plan', ' Lifestyle', ' Doctor Consult', ' Monitoring', ' Goals'],
                 'Daily/Weekly': [
                     'Low-dose B12 500mcg (optional)',
                     'Maintain balanced diet\nInclude B12 foods 2-3x/week',
@@ -5004,32 +5004,32 @@ elif page == " Results":
         
         # Add summary based on risk level
         st.markdown("---")
-        st.markdown("### 📌 Summary & Next Steps")
+        st.markdown("###  Summary & Next Steps")
         
         if risk_level == 'High':
             st.error("""
-            **⚠️ URGENT: High Risk Detected**
+            ** URGENT: High Risk Detected**
             
             **Immediate Actions (Next 7 Days):**
-            1. 👨‍⚕️ Schedule doctor appointment immediately
-            2. 💊 Start high-dose B12 supplements (2000mcg daily)
-            3. 📋 Get comprehensive blood test including B12, folate, iron
-            4. 🥗 Increase B12-rich foods in your diet
-            5. 📝 Start tracking symptoms daily
+            1.  Schedule doctor appointment immediately
+            2.  Start high-dose B12 supplements (2000mcg daily)
+            3.  Get comprehensive blood test including B12, folate, iron
+            4.  Increase B12-rich foods in your diet
+            5.  Start tracking symptoms daily
             
             **Follow-up:** You should see improvement within 2-4 weeks. 
             Schedule follow-up appointment in 2 weeks.
             """)
         elif risk_level == 'Medium':
             st.warning("""
-            **🟡 Moderate Risk Detected**
+            ** Moderate Risk Detected**
             
             **Recommended Actions (Next 2 Weeks):**
-            1. 👨‍⚕️ Schedule doctor appointment within 2 weeks
-            2. 💊 Start B12 supplements (1000mcg daily)
-            3. 🥗 Add B12-rich foods to daily diet
-            4. 📊 Get blood test to confirm levels
-            5. 📝 Monitor symptoms weekly
+            1.  Schedule doctor appointment within 2 weeks
+            2.  Start B12 supplements (1000mcg daily)
+            3.  Add B12-rich foods to daily diet
+            4.  Get blood test to confirm levels
+            5.  Monitor symptoms weekly
             
             **Follow-up:** Check progress in 2 months with follow-up blood test.
             """)
@@ -5038,18 +5038,18 @@ elif page == " Results":
             **🟢 Low Risk - Maintaining Good Health**
             
             **Preventive Actions:**
-            1. 👨‍⚕️ Annual check-up with doctor
-            2. 🥗 Continue balanced diet with B12-rich foods
-            3. 📊 Annual blood test to monitor levels
-            4. 🏃 Maintain healthy lifestyle
-            5. 📝 Watch for any new symptoms
+            1.  Annual check-up with doctor
+            2.  Continue balanced diet with B12-rich foods
+            3.  Annual blood test to monitor levels
+            4.  Maintain healthy lifestyle
+            5.  Watch for any new symptoms
             
             **Follow-up:** Annual review recommended to maintain optimal health.
             """)
         
         # ==================== DOWNLOAD SECTION ====================
         st.markdown("---")
-        st.markdown("### 📥 Download Your Report")
+        st.markdown("###  Download Your Report")
         
         col_down1, col_down2, col_down3 = st.columns(3)
         
@@ -5079,7 +5079,7 @@ Consult with your healthcare provider for personalized medical advice.
             """
             
             st.download_button(
-                label="📄 Download Text Report",
+                label=" Download Text Report",
                 data=text_report,
                 file_name=f"b12_health_report_{datetime.now().strftime('%Y%m%d')}.txt",
                 mime="text/plain",
@@ -5423,7 +5423,7 @@ elif page == " Food Scanner":
     
     # ==================== TAB 1: TEXT DESCRIPTION WITH AI ====================
     with tab1:
-        st.markdown("### 📝 Describe Your Meal")
+        st.markdown("###  Describe Your Meal")
         st.info("Type what you ate and AI will analyze the B12 content")
         
         col1, col2 = st.columns([2, 1])
@@ -5437,32 +5437,31 @@ elif page == " Food Scanner":
             )
             
             # Additional context
-            with st.expander("➕ Add more context (optional)"):
+            with st.expander(" Add more context (optional)"):
                 meal_time = st.selectbox("When did you eat?", ["Breakfast", "Lunch", "Dinner", "Snack"], key="food_meal_time")
                 portion_size = st.select_slider("Portion size", options=["Small", "Medium", "Large"], value="Medium", key="food_portion")
                 additional_notes = st.text_input("Any specific ingredients?", placeholder="e.g., with butter, fried, boiled", key="food_notes")
         
         with col2:
-            st.markdown("**💡 Tips for better results:**")
+            st.markdown("** Tips for better results:**")
             st.markdown("• Be specific about quantities")
             st.markdown("• Mention cooking methods")
-            st.markdown("• Include all ingredients")
-            st.markdown("• Specify portion sizes")
+           
             
-            st.markdown("**📊 Your Profile:**")
+            st.markdown("** Your Profile:**")
             if st.session_state.user_data:
                 st.markdown(f"• Diet: {st.session_state.user_data.get('diet_type', 'Not set')}")
                 st.markdown(f"• Age: {st.session_state.user_data.get('age', 'Not set')}")
             else:
                 st.markdown("• Complete assessment for personalized analysis")
         
-        if st.button("🔍 Analyze with AI", type="primary", width='stretch', key="analyze_food_text"):
+        if st.button(" Analyze with AI", type="primary", width='stretch', key="analyze_food_text"):
             if food_input:
-                with st.spinner("🤖 AI is analyzing your meal... This may take a few seconds"):
+                with st.spinner(" AI is analyzing your meal... This may take a few seconds"):
                     try:
                         # Check if API key exists
                         if not GEMINI_API_KEY_MEAL:
-                            st.warning("⚠️ Gemini API key not found. Using local database instead.")
+                            st.warning(" Gemini API key not found. Using local database instead.")
                             analyze_b12_food_local(food_input)
                         else:
                             # Configure Gemini API
@@ -5531,7 +5530,7 @@ elif page == " Food Scanner":
                             
                             if response and response.text:
                                 st.markdown("---")
-                                st.markdown("### 📊 AI Analysis Results")
+                                st.markdown("###  AI Analysis Results")
                                 
                                 # Display the AI response
                                 st.markdown(response.text)
@@ -5546,7 +5545,7 @@ elif page == " Food Scanner":
                                 
                                 # Download button for results
                                 st.download_button(
-                                    label="📥 Download Analysis",
+                                    label=" Download Analysis",
                                     data=response.text,
                                     file_name=f"b12_food_analysis_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
                                     mime="text/plain",
@@ -5587,24 +5586,24 @@ elif page == " Food Scanner":
             image = Image.open(uploaded_file)
             st.image(image, caption="Your meal", use_container_width=True)
             
-            if st.button("🔍 Analyze Food Photo with AI", type="primary", width='stretch', key="analyze_food_photo"):
-                with st.spinner("🤖 AI is analyzing your food photo... This may take 10-15 seconds"):
+            if st.button(" Analyze Food Photo with AI", type="primary", width='stretch', key="analyze_food_photo"):
+                with st.spinner(" AI is analyzing your food photo... This may take 10-15 seconds"):
                     try:
                         # Check if API key exists
                         if not GEMINI_API_KEY_FOOD:
-                            st.warning("⚠️ Gemini API key not found. Photo analysis unavailable.")
+                            st.warning(" Gemini API key not found. Photo analysis unavailable.")
                             st.info("Try using the text description or food guide tabs instead.")
                         else:
                             # Call the AI function for image analysis
                             result = analyze_food_with_gemini(image)
                             
                             st.markdown("---")
-                            st.markdown("### 📊 AI Food Analysis Results")
+                            st.markdown("###  AI Food Analysis Results")
                             st.markdown(result)
                             
                             # Download button
                             st.download_button(
-                                label="📥 Download Analysis",
+                                label=" Download Analysis",
                                 data=result,
                                 file_name=f"b12_food_photo_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
                                 mime="text/plain",
@@ -5616,11 +5615,11 @@ elif page == " Food Scanner":
     
     # ==================== TAB 3: FOOD GUIDE (Local Database Reference) ====================
     with tab3:
-        st.markdown("### 📚 Complete B12 Food Reference Guide")
+        st.markdown("###  Complete B12 Food Reference Guide")
         st.info("Use this guide to identify B12-rich foods")
         
         # Search functionality
-        search = st.text_input("🔍 Search for a food:", placeholder="e.g., eggs, salmon, milk", key="food_search")
+        search = st.text_input(" Search for a food:", placeholder="e.g., eggs, salmon, milk", key="food_search")
         
         if search:
             # Filter database based on search
@@ -5643,7 +5642,7 @@ elif page == " Food Scanner":
                 st.warning("No matching foods found. Try a different search term.")
         
         # Complete food guide in expandable sections
-        with st.expander("🥚 HIGH B12 Foods (> 2.4 mcg)", expanded=False):
+        with st.expander(" HIGH B12 Foods (> 2.4 mcg)", expanded=False):
             high_b12 = {k: v for k, v in b12_database.items() if v >= 2.4}
             data = []
             for food, value in sorted(high_b12.items(), key=lambda x: x[1], reverse=True)[:10]:
@@ -5652,11 +5651,11 @@ elif page == " Food Scanner":
                     "Food": food.title(),
                     "B12 (mcg)": f"{value:.1f}",
                     "% Daily Need": f"{percentage:.0f}%",
-                    "Rating": "💪 EXCELLENT" if value > 10 else "🟢 GOOD"
+                    "Rating": " EXCELLENT" if value > 10 else "🟢 GOOD"
                 })
             st.dataframe(pd.DataFrame(data), use_container_width=True, hide_index=True)
         
-        with st.expander("🥛 MEDIUM B12 Foods (1-2.4 mcg)", expanded=False):
+        with st.expander(" MEDIUM B12 Foods (1-2.4 mcg)", expanded=False):
             medium_b12 = {k: v for k, v in b12_database.items() if 1 <= v < 2.4}
             data = []
             for food, value in sorted(medium_b12.items(), key=lambda x: x[1], reverse=True):
@@ -5669,7 +5668,7 @@ elif page == " Food Scanner":
                 })
             st.dataframe(pd.DataFrame(data), use_container_width=True, hide_index=True)
         
-        with st.expander("🥗 LOW B12 Foods (< 1 mcg)", expanded=False):
+        with st.expander(" LOW B12 Foods (< 1 mcg)", expanded=False):
             low_b12 = {k: v for k, v in b12_database.items() if v < 1}
             data = []
             for food, value in sorted(low_b12.items(), key=lambda x: x[1], reverse=True)[:15]:
@@ -5684,7 +5683,7 @@ elif page == " Food Scanner":
         
         # Daily requirement info
         st.markdown("---")
-        st.markdown("### 📊 Daily B12 Requirements")
+        st.markdown("###  Daily B12 Requirements")
         req_data = pd.DataFrame({
             "Group": ["Adults", "Pregnancy", "Breastfeeding", "Children (4-8)", "Teens (14-18)"],
             "Daily B12 Need": ["2.4 mcg", "2.6 mcg", "2.8 mcg", "1.2 mcg", "2.4 mcg"],
@@ -6138,8 +6137,8 @@ elif page == " Barcode Scanner":
     import time
     import pandas as pd
     
-    st.markdown("## 📱 Barcode Scanner")
-    st.caption("🔍 Searching Open Food Facts Database • 3+ Million Products")
+    st.markdown("##  Barcode Scanner")
+    st.caption(" Searching Open Food Facts Database • 3+ Million Products")
     
     # Initialize session state
     if 'my_products' not in st.session_state:
@@ -6288,13 +6287,13 @@ elif page == " Barcode Scanner":
         text-align: center;
         margin-bottom: 20px;
     ">
-        <h3>🔍 Open Food Facts Scanner</h3>
+        <h3> Open Food Facts Scanner</h3>
         <p>Searching 3+ Million Real Products • No API Key Needed</p>
     </div>
     """, unsafe_allow_html=True)
     
     # ==================== TEST BUTTONS ====================
-    st.subheader("📋 Click to Test Real Products:")
+    st.subheader(" Click to Test Real Products:")
     
     # Display test buttons in rows
     test_items = list(test_barcodes.items())
@@ -6302,7 +6301,7 @@ elif page == " Barcode Scanner":
     # First row
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button(f"🥫 Nutella", key="test1", use_container_width=True):
+        if st.button(f" Nutella", key="test1", use_container_width=True):
             st.session_state.search_barcode = "3017620422003"
             st.session_state.search_now = True
     # with col2:
@@ -6310,7 +6309,7 @@ elif page == " Barcode Scanner":
     #         st.session_state.search_barcode = "2001234500001"
     #         st.session_state.search_now = True
     with col2:
-        if st.button(f"🍪 Oreo", key="test3", use_container_width=True):
+        if st.button(f" Oreo", key="test3", use_container_width=True):
             st.session_state.search_barcode = "7622210449283"
             st.session_state.search_now = True
     
@@ -6352,22 +6351,22 @@ elif page == " Barcode Scanner":
     with col_input:
         default_barcode = st.session_state.get('search_barcode', '')
         barcode_input = st.text_input(
-            "🔢 Enter Barcode Number:", 
+            " Enter Barcode Number:", 
             value=default_barcode, 
             placeholder="e.g., 3017620422003",
             help="Enter 8-13 digit barcode number"
         )
     
     with col_info:
-        st.caption("✅ Works with EAN-13, UPC-A, EAN-8")
-        st.caption("📦 3+ million products")
+        st.caption(" Works with EAN-13, UPC-A, EAN-8")
+        st.caption(" 3+ million products")
     
     # Search button
     col_search, col_clear = st.columns([3, 1])
     with col_search:
         search_clicked = st.button("🔍 Search Open Food Facts Database", type="primary", use_container_width=True)
     with col_clear:
-        if st.button("🔄 Clear", use_container_width=True):
+        if st.button(" Clear", use_container_width=True):
             st.session_state.search_barcode = ''
             st.rerun()
     
@@ -6376,7 +6375,7 @@ elif page == " Barcode Scanner":
         st.session_state.search_now = False
         
         if barcode_input:
-            with st.spinner("🔍 Searching Open Food Facts database of 3+ million products..."):
+            with st.spinner(" Searching Open Food Facts database of 3+ million products..."):
                 
                 # Add to search history
                 st.session_state.search_history.append({
@@ -6390,7 +6389,7 @@ elif page == " Barcode Scanner":
                 
                 if result and result.get('success'):
                     st.balloons()
-                    st.success(f"✅ Product Found in Open Food Facts Database!")
+                    st.success(f" Product Found in Open Food Facts Database!")
                     
                     # ==================== DISPLAY PRODUCT FROM REAL DATABASE ====================
                     
@@ -6410,11 +6409,11 @@ elif page == " Barcode Scanner":
                     
                     # Product details in tabs
                     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-                        "📋 Product Details", 
-                        "🥗 Ingredients", 
-                        "💊 B12 Information",
-                        "📊 Nutrition Facts",
-                        "💡 Uses & Recipes"
+                        " Product Details", 
+                        " Ingredients", 
+                        " B12 Information",
+                        " Nutrition Facts",
+                        " Uses & Recipes"
                     ])
                     
                     with tab1:
@@ -6425,41 +6424,41 @@ elif page == " Barcode Scanner":
                         with col_b:
                             st.metric("Serving Size", result.get('serving_size', 'N/A'))
                             if result.get('allergens') and result['allergens'] != 'None listed':
-                                st.warning(f"⚠️ Allergens: {result['allergens']}")
+                                st.warning(f" Allergens: {result['allergens']}")
                         
                         # Product codes
                         st.info(f"**Product Code:** {result['barcode']} | **Source:** {result['source']}")
                     
                     with tab2:
-                        st.markdown("### 🥗 Ingredients List")
+                        st.markdown("###  Ingredients List")
                         st.write(result.get('ingredients', 'No ingredients listed'))
                         
                         # Copy button
-                        if st.button("📋 Copy Ingredients"):
+                        if st.button(" Copy Ingredients"):
                             st.code(result.get('ingredients', ''))
                     
                     with tab3:
                         if result.get('is_b12'):
-                            st.success("### ✅ THIS PRODUCT CONTAINS VITAMIN B12!")
+                            st.success("###  THIS PRODUCT CONTAINS VITAMIN B12!")
                             
                             # B12 benefits
                             st.markdown("""
-                            #### 💊 Benefits of Vitamin B12:
+                            ####  Benefits of Vitamin B12:
                             
                             | Benefit | Description |
                             |---------|-------------|
-                            | 🧠 **Brain Health** | Supports neurological function and cognitive health |
-                            | ⚡ **Energy Boost** | Helps convert food into energy, reduces fatigue |
-                            | 🩸 **Red Blood Cells** | Essential for healthy red blood cell formation |
-                            | 💪 **Nervous System** | Maintains healthy nerve cells |
-                            | 🧬 **DNA Synthesis** | Important for DNA production and cell division |
+                            |  **Brain Health** | Supports neurological function and cognitive health |
+                            |  **Energy Boost** | Helps convert food into energy, reduces fatigue |
+                            |  **Red Blood Cells** | Essential for healthy red blood cell formation |
+                            |  **Nervous System** | Maintains healthy nerve cells |
+                            |  **DNA Synthesis** | Important for DNA production and cell division |
                             
-                            #### 📅 Recommended Daily Intake:
+                            ####  Recommended Daily Intake:
                             - **Adults:** 2.4 mcg per day
                             - **Pregnant women:** 2.6 mcg per day
                             - **Breastfeeding:** 2.8 mcg per day
                             
-                            #### 🍽️ Best Food Sources of B12:
+                            ####  Best Food Sources of B12:
                             - Clams, liver, fish (salmon, trout, tuna)
                             - Beef, eggs, dairy products
                             - Fortified cereals and nutritional yeast
@@ -6468,20 +6467,20 @@ elif page == " Barcode Scanner":
                             
                             # Check if it's a supplement
                             if 'supplement' in result['name'].lower() or 'b12' in result['name'].lower():
-                                st.info("💊 **This appears to be a B12 supplement** - Follow dosage instructions on package")
+                                st.info(" **This appears to be a B12 supplement** - Follow dosage instructions on package")
                         else:
-                            st.info("### ❌ No Vitamin B12 Detected")
+                            st.info("###  No Vitamin B12 Detected")
                             st.markdown("""
-                            #### 🔍 To get more Vitamin B12, try:
-                            - 🥩 **Animal products:** Meat, fish, eggs, dairy
-                            - 🥣 **Fortified foods:** Cereals, plant milks, nutritional yeast
-                            - 💊 **B12 supplements:** Tablets, sublingual, sprays
+                            ####  To get more Vitamin B12, try:
+                            -  **Animal products:** Meat, fish, eggs, dairy
+                            -  **Fortified foods:** Cereals, plant milks, nutritional yeast
+                            -  **B12 supplements:** Tablets, sublingual, sprays
                             
                             *Vitamin B12 is essential for energy, brain function, and red blood cell formation.*
                             """)
                     
                     with tab4:
-                        st.markdown("### 📊 Nutrition Facts (per 100g/ml)")
+                        st.markdown("###  Nutrition Facts (per 100g/ml)")
                         
                         nutriments = result.get('nutriments', {})
                         if nutriments:
@@ -6506,21 +6505,21 @@ elif page == " Barcode Scanner":
                             st.info("No nutrition information available for this product")
                     
                     with tab5:
-                        st.markdown("### 🍽️ How to Use This Product")
+                        st.markdown("###  How to Use This Product")
                         
                         # Generate uses based on product type
                         product_name_lower = result['name'].lower()
                         
                         if 'nutella' in product_name_lower:
                             st.markdown("""
-                            #### 🥫 Nutella Uses:
+                            ####  Nutella Uses:
                             - **Breakfast:** Spread on toast, pancakes, waffles, crepes
                             - **Snacks:** Dip fruits (strawberries, bananas, apples)
                             - **Baking:** Use in brownies, cakes, cookies
                             - **Desserts:** Top ice cream, make milkshakes
                             - **Creative:** Fill crepes, make Nutella hot chocolate
                             
-                            #### 🍪 Popular Recipes:
+                            ####  Popular Recipes:
                             1. **Nutella Toast** - Spread on warm toast, add sliced bananas
                             2. **Nutella Crepes** - Fill crepes with Nutella and strawberries
                             3. **Nutella Brownies** - Swirl Nutella into brownie batter
@@ -6528,13 +6527,13 @@ elif page == " Barcode Scanner":
                             """)
                         elif 'oreo' in product_name_lower:
                             st.markdown("""
-                            #### 🍪 Oreo Uses:
+                            ####  Oreo Uses:
                             - **Snacking:** Classic twist, lick, dunk in milk
                             - **Desserts:** Crush for ice cream topping
                             - **Baking:** Use in cheesecakes, brownies, cookies
                             - **Drinks:** Make Oreo milkshakes, smoothies
                             
-                            #### 🥤 Popular Recipes:
+                            ####  Popular Recipes:
                             1. **Oreo Milkshake** - Blend with vanilla ice cream and milk
                             2. **Oreo Cheesecake** - Crust made from Oreo crumbs
                             3. **Cookies & Cream Ice Cream** - Homemade version
@@ -6542,13 +6541,13 @@ elif page == " Barcode Scanner":
                             """)
                         elif 'milk' in product_name_lower:
                             st.markdown("""
-                            #### 🥛 Milk Uses:
+                            ####  Milk Uses:
                             - **Beverages:** Drink plain, with cereal, in coffee/tea
                             - **Cooking:** Soups, sauces, creamy dishes
                             - **Baking:** Cakes, breads, pancakes, muffins
                             - **Smoothies:** Base for fruit and protein smoothies
                             
-                            #### 🍳 Recipes:
+                            ####  Recipes:
                             1. **Morning Cereal** - Classic breakfast
                             2. **Creamy Mashed Potatoes** - Use instead of water
                             3. **Homemade Hot Chocolate** - Heat with cocoa and sugar
@@ -6556,13 +6555,13 @@ elif page == " Barcode Scanner":
                             """)
                         elif 'corn flakes' in product_name_lower or 'cereal' in product_name_lower:
                             st.markdown("""
-                            #### 🥣 Cereal Uses:
+                            ####  Cereal Uses:
                             - **Breakfast:** With milk and fresh fruit
                             - **Snacking:** Eat dry as a crunchy snack
                             - **Cooking:** Use as coating for fried chicken
                             - **Baking:** In cookies, bars, dessert crusts
                             
-                            #### 🍗 Recipes:
+                            ####  Recipes:
                             1. **Classic Breakfast** - Serve with milk and banana slices
                             2. **Cereal Bars** - Mix with honey and peanut butter
                             3. **Chicken Coating** - Crush and use as breading
@@ -6570,13 +6569,13 @@ elif page == " Barcode Scanner":
                             """)
                         elif 'orange juice' in product_name_lower:
                             st.markdown("""
-                            #### 🧃 Orange Juice Uses:
+                            ####  Orange Juice Uses:
                             - **Beverage:** Fresh glass for breakfast
                             - **Smoothies:** Base for fruit smoothies
                             - **Cooking:** Marinades, sauces, glazes
                             - **Cocktails:** Mimosas, screwdrivers, punches
                             
-                            #### 🍹 Recipes:
+                            ####  Recipes:
                             1. **Breakfast Juice** - Serve chilled
                             2. **Sunrise Smoothie** - Blend with banana and yogurt
                             3. **Chicken Marinade** - Mix with herbs and garlic
@@ -6584,13 +6583,13 @@ elif page == " Barcode Scanner":
                             """)
                         elif 'coca-cola' in product_name_lower or 'coke' in product_name_lower:
                             st.markdown("""
-                            #### 🥤 Coca-Cola Uses:
+                            ####  Coca-Cola Uses:
                             - **Beverage:** Chilled as a refreshing drink
                             - **Mixer:** With rum (Cuba Libre), whiskey
                             - **Cooking:** Coca-Cola chicken, ribs, cake
                             - **Marinade:** Tenderizes meat
                             
-                            #### 🍗 Recipes:
+                            ####  Recipes:
                             1. **Coca-Cola Chicken** - Simmer chicken in Coke with soy sauce
                             2. **Coca-Cola Cake** - Chocolate cake with Coke in batter
                             3. **Coca-Cola Ribs** - Use as braising liquid
@@ -6598,13 +6597,13 @@ elif page == " Barcode Scanner":
                             """)
                         elif 'water' in product_name_lower:
                             st.markdown("""
-                            #### 💧 Water Uses:
+                            ####  Water Uses:
                             - **Hydration:** Drink throughout the day
                             - **Cooking:** Base for soups, boiling pasta/rice
                             - **Beverages:** Coffee, tea, juice concentrates
                             - **Baby Formula:** Mix with powder
                             
-                            #### 💪 Health Tips:
+                            ####  Health Tips:
                             1. Drink 8 glasses daily for optimal hydration
                             2. Add lemon or cucumber for flavor
                             3. Drink before meals to aid digestion
@@ -6612,31 +6611,31 @@ elif page == " Barcode Scanner":
                             """)
                         elif 'b12' in product_name_lower or 'supplement' in product_name_lower:
                             st.markdown("""
-                            #### 💊 B12 Supplement Uses:
+                            ####  B12 Supplement Uses:
                             - **Daily Supplement:** Take as directed on package
                             - **Energy Support:** Best taken in the morning
                             - **With Food:** Take with meals for better absorption
                             - **Sublingual:** Place under tongue for 30-60 seconds
                             
-                            #### ⏰ Best Time to Take:
+                            ####  Best Time to Take:
                             - **Morning:** With breakfast for all-day energy
                             - **Empty stomach:** For maximum absorption
                             - **Consistently:** Same time each day
                             
-                            #### ⚠️ Important Notes:
+                            ####  Important Notes:
                             - Follow dosage on package
                             - Consult doctor before starting supplements
                             - Store in cool, dry place
                             """)
                         else:
                             st.markdown("""
-                            #### 🍽️ General Food Uses:
+                            ####  General Food Uses:
                             - **As packaged:** Follow preparation instructions
                             - **In recipes:** Incorporate into your favorite dishes
                             - **Storage:** Follow package storage instructions
                             - **Serving suggestions:** Check package for ideas
                             
-                            #### 💡 Tips:
+                            ####  Tips:
                             - Check expiration date before use
                             - Store properly after opening
                             - Follow any preparation instructions
@@ -6647,7 +6646,7 @@ elif page == " Barcode Scanner":
                     col_btn1, col_btn2, col_btn3 = st.columns(3)
                     
                     with col_btn1:
-                        if st.button("➕ Add to My Collection", use_container_width=True):
+                        if st.button(" Add to My Collection", use_container_width=True):
                             st.session_state.my_products.append({
                                 'name': result['name'],
                                 'brand': result['brand'],
@@ -6657,41 +6656,41 @@ elif page == " Barcode Scanner":
                                 'time': datetime.now().strftime("%H:%M"),
                                 'source': 'Open Food Facts'
                             })
-                            st.success("✅ Added to your collection!")
+                            st.success(" Added to your collection!")
                             time.sleep(0.5)
                             st.rerun()
                     
                     with col_btn2:
-                        if st.button("🔄 Scan Another", use_container_width=True):
+                        if st.button(" Scan Another", use_container_width=True):
                             st.session_state.search_barcode = ''
                             st.rerun()
                     
                     with col_btn3:
-                        if st.button("📤 Share Product", use_container_width=True):
+                        if st.button(" Share Product", use_container_width=True):
                             share_text = f"""
-📦 PRODUCT INFORMATION
+ PRODUCT INFORMATION
 ══════════════════════
 Name: {result['name']}
 Brand: {result['brand']}
 Barcode: {result['barcode']}
-B12 Content: {'✅ Contains B12' if result['is_b12'] else '❌ No B12 detected'}
+B12 Content: {'Contains B12' if result['is_b12'] else ' No B12 detected'}
 Source: {result['source']}
 
-🥗 Ingredients:
+ Ingredients:
 {result.get('ingredients', 'N/A')[:200]}...
                             """
                             st.code(share_text)
                 
                 elif result and result.get('error') == 'not_found':
-                    st.error("❌ Product not found in Open Food Facts database")
+                    st.error(" Product not found in Open Food Facts database")
                     st.info(f"Barcode {barcode_input} was not found in the database of 3+ million products")
                     
                     # Suggest similar barcodes from test set
                     if barcode_input in test_barcodes:
-                        st.success(f"✅ But it's in our test database: {test_barcodes[barcode_input]}")
+                        st.success(f" But it's in our test database: {test_barcodes[barcode_input]}")
                     
                     st.markdown("""
-                    #### 💡 Tips:
+                    ####  Tips:
                     - Check if you entered the correct barcode
                     - Try one of the test barcodes above
                     - Some new products may not be in database yet
@@ -6699,28 +6698,28 @@ Source: {result['source']}
                     """)
                     
                     # Show similar barcodes
-                    st.markdown("#### 🔍 Try these working barcodes:")
+                    st.markdown("####  Try these working barcodes:")
                     for code, desc in list(test_barcodes.items())[:5]:
                         st.markdown(f"- `{code}`: {desc}")
                 
                 elif result and result.get('error') in ['timeout', 'connection_error']:
-                    st.warning("⚠️ Network issue - Could not connect to Open Food Facts database")
+                    st.warning(" Network issue - Could not connect to Open Food Facts database")
                     st.info("Please check your internet connection and try again")
                     
                     # Still show test database option
                     if barcode_input in test_barcodes:
-                        st.success(f"✅ But it's in our test database: {test_barcodes[barcode_input]}")
-                
+                        st.success(f" But it's in our test database: {test_barcodes[barcode_input]}")
+            
                 else:
-                    st.error("❌ Error searching database")
+                    st.error(" Error searching database")
                     st.info("Please try again or use one of the test barcodes above")
         else:
-            st.warning("⚠️ Please enter a barcode number")
+            st.warning(" Please enter a barcode number")
     
     # ==================== MY COLLECTION ====================
     if st.session_state.my_products:
         st.markdown("---")
-        st.subheader("📋 My Product Collection")
+        st.subheader(" My Product Collection")
         
         # Show statistics
         total = len(st.session_state.my_products)
@@ -6736,20 +6735,20 @@ Source: {result['source']}
         
         # Display products
         for i, item in enumerate(st.session_state.my_products):
-            with st.expander(f"📦 {item['name']} - Added {item.get('date', 'Unknown')}"):
+            with st.expander(f" {item['name']} - Added {item.get('date', 'Unknown')}"):
                 st.markdown(f"**Brand:** {item.get('brand', 'Unknown')}")
                 st.markdown(f"**Barcode:** `{item.get('barcode', 'Unknown')}`")
                 if item.get('is_b12'):
-                    st.success("✅ Contains Vitamin B12")
+                    st.success(" Contains Vitamin B12")
                 st.markdown(f"**Source:** {item.get('source', 'Database')}")
                 st.caption(f"Added: {item.get('date', 'Unknown')} at {item.get('time', 'Unknown')}")
                 
-                if st.button("🗑️ Remove", key=f"remove_{i}"):
+                if st.button(" Remove", key=f"remove_{i}"):
                     st.session_state.my_products.pop(i)
                     st.rerun()
         
         # Export options
-        if st.button("📥 Export Collection", use_container_width=True):
+        if st.button(" Export Collection", use_container_width=True):
             # Create DataFrame
             df = pd.DataFrame(st.session_state.my_products)
             
@@ -6758,7 +6757,7 @@ Source: {result['source']}
             with col_csv:
                 csv = df.to_csv(index=False)
                 st.download_button(
-                    label="📥 Download as CSV",
+                    label=" Download as CSV",
                     data=csv,
                     file_name=f"my_products_{datetime.now().strftime('%Y%m%d')}.csv",
                     mime="text/csv"
@@ -6776,7 +6775,7 @@ Source: {result['source']}
                     text_export += "-" * 30 + "\n"
                 
                 st.download_button(
-                    label="📥 Download as Text",
+                    label=" Download as Text",
                     data=text_export,
                     file_name=f"my_products_{datetime.now().strftime('%Y%m%d')}.txt",
                     mime="text/plain"
@@ -6784,22 +6783,22 @@ Source: {result['source']}
     
     # ==================== SEARCH HISTORY ====================
     if st.session_state.search_history:
-        with st.expander("📜 Recent Searches"):
+        with st.expander(" Recent Searches"):
             for item in st.session_state.search_history[-10:]:  # Show last 10
-                st.caption(f"🔍 {item['date']} {item['time']} - Barcode: {item['barcode']}")
+                st.caption(f" {item['date']} {item['time']} - Barcode: {item['barcode']}")
             
             if st.button("Clear History"):
                 st.session_state.search_history = []
                 st.rerun()
 
     # ==================== DATABASE INFO ====================
-    with st.expander("ℹ️ About Open Food Facts Database"):
+    with st.expander(" About Open Food Facts Database"):
         st.markdown("""
         ### About Open Food Facts
         
         **Open Food Facts** is a free, open database of food products from around the world.
         
-        #### 📊 Database Stats:
+        ####  Database Stats:
         - **3+ Million Products** from 150+ countries
         - **100,000+ Contributors** worldwide
         - **Updated Daily** with new products
