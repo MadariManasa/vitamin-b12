@@ -2994,12 +2994,12 @@ if page == " Dashboard":
                             ]
                             st.rerun()
                     
-                    with col_notif3:
-                        if st.button("🗑️ Delete All", key="delete_all_notifications", use_container_width=True):
-                            # Show confirmation
-                            if st.checkbox("⚠️ Confirm delete ALL notifications", key="confirm_delete_all_notifications"):
-                                st.session_state.notifications = []
-                                st.rerun()
+                    # with col_notif3:
+                    #     if st.button("🗑️ Delete All", key="delete_all_notifications", use_container_width=True):
+                    #         # Show confirmation
+                    #         if st.checkbox("⚠️ Confirm delete ALL notifications", key="confirm_delete_all_notifications"):
+                    #             st.session_state.notifications = []
+                    #             st.rerun()
                 else:
                     st.markdown("""
                     <div style="text-align: center; padding: 20px;">
