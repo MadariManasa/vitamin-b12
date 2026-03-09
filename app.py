@@ -3864,8 +3864,9 @@ if page == " Dashboard":
     """, unsafe_allow_html=True)
 
 # ==================== LAB REPORTS PAGE ====================
+# ==================== LAB REPORTS PAGE - CORRECTED VERSION ====================
 elif page == " Lab Reports":
-    st.markdown('<div class="main-title">  Lab Report Analysis</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title"> 📊 Lab Report Analysis</div>', unsafe_allow_html=True)
     
     st.markdown("""
     <div style="
@@ -3890,7 +3891,7 @@ elif page == " Lab Reports":
         )
     
     with col2:
-        st.markdown("** Supported:**")
+        st.markdown("**📋 Supported:**")
         st.write("- PDF files only")
         st.write("- Max size: 10MB")
     
@@ -3907,7 +3908,7 @@ elif page == " Lab Reports":
             st.metric("File Size", file_size)
         
         # Preview option (collapsed by default)
-        with st.expander(" Preview PDF Text"):
+        with st.expander("📄 Preview PDF Text"):
             try:
                 from utils import extract_text_from_pdf
                 text = extract_text_from_pdf(uploaded_file)
@@ -3916,15 +3917,15 @@ elif page == " Lab Reports":
                 st.info("Could not extract text. The file may be scanned.")
         
         # AI Analysis button
-        if st.button(" Analyze Lab Report", type="primary", use_container_width=True):
-            with st.spinner(" AI is analyzing your lab report..."):
+        if st.button("🔍 Analyze Lab Report", type="primary", use_container_width=True):
+            with st.spinner("🤖 AI is analyzing your lab report..."):
                 try:
                     # Use Gemini to analyze PDF
                     ai_result = analyze_lab_pdf_with_gemini(uploaded_file)
                     
                     if ai_result.get('success'):
                         st.markdown("---")
-                        st.markdown("###  Your Lab Report Results")
+                        st.markdown("### 📋 Your Lab Report Results")
                         
                         # Get B12 value safely
                         b12_value = ai_result.get('b12_value')
@@ -3954,12 +3955,10 @@ elif page == " Lab Reports":
                             b12_val = None
                         
                         # ========== MAIN RESULTS TABLE ==========
-                        # Create a clean 2-column table with 3 rows
-                        
                         # Row 1: B12 Level
                         col_r1, col_r2 = st.columns(2)
                         with col_r1:
-                            st.markdown("** B12 Level**")
+                            st.markdown("**📊 B12 Level**")
                         with col_r2:
                             if b12_val:
                                 st.markdown(f"**{b12_val} pg/mL**")
@@ -3971,7 +3970,7 @@ elif page == " Lab Reports":
                         # Row 2: Status
                         col_r1, col_r2 = st.columns(2)
                         with col_r1:
-                            st.markdown("** Status**")
+                            st.markdown("**⚠️ Status**")
                         with col_r2:
                             st.markdown(f"**{status}**")
                         
@@ -3980,50 +3979,50 @@ elif page == " Lab Reports":
                         # Row 3: Normal Range
                         col_r1, col_r2 = st.columns(2)
                         with col_r1:
-                            st.markdown("** Normal Range**")
+                            st.markdown("**📏 Normal Range**")
                         with col_r2:
                             st.markdown("**200-900 pg/mL**")
                         
                         st.markdown("---")
                         
-                        # ========== RECOMMENDATIONS TABLE ==========
-                        st.markdown("###  Recommendations")
-                        
-                        # Get recommendations based on status
+                        # ========== RECOMMENDATIONS ==========
+                        st.markdown("### 💡 Recommendations")
+
+                        # Define recommendations based on status
                         if status == "DEFICIENT":
-                            recs = [
-                                (" Supplement", "High-dose B12 (2000mcg daily)")
-                                (" Diet", "Liver, clams, sardines, eggs"),
-                                (" Doctor", "Consult within 1 week")
+                            recommendations_data = [
+                                ("💊 Supplement", "High-dose B12 (2000mcg daily)"),
+                                ("🥗 Diet", "Liver, clams, sardines, eggs"),
+                                ("👨‍⚕️ Doctor", "Consult within 1 week")
                             ]
                         elif status == "BORDERLINE":
-                            recs = [
-                                (" Supplement", "B12 1000mcg daily"),
-                                (" Diet", "Eggs, dairy, fish 3-4x/week"),
-                                (" Doctor", "Follow-up in 2 months")
+                            recommendations_data = [
+                                ("💊 Supplement", "B12 1000mcg daily"),
+                                ("🥗 Diet", "Eggs, dairy, fish 3-4x/week"),
+                                ("👨‍⚕️ Doctor", "Follow-up in 2 months")
                             ]
                         elif status == "NORMAL":
-                            recs = [
-                                (" Supplement", "Maintenance dose (500mcg)"),
-                                (" Diet", "Continue balanced diet"),
-                                (" Doctor", "Annual check-up")
+                            recommendations_data = [
+                                ("💊 Supplement", "Maintenance dose (500mcg)"),
+                                ("🥗 Diet", "Continue balanced diet"),
+                                ("👨‍⚕️ Doctor", "Annual check-up")
                             ]
                         else:
-                            recs = [
-                                (" Supplement", "Consult doctor for testing"),
-                                (" Diet", "Include B12-rich foods"),
-                                (" Doctor", "Get blood test done")
+                            recommendations_data = [
+                                ("💊 Supplement", "Consult doctor for testing"),
+                                ("🥗 Diet", "Include B12-rich foods"),
+                                ("👨‍⚕️ Doctor", "Get blood test done")
                             ]
-                        
-                        # Display recommendations as a clean table
-                        for i, (category, recommendation) in enumerate(recs):
+
+                        # Display recommendations
+                        for i, (category, recommendation) in enumerate(recommendations_data):
                             col_rec1, col_rec2 = st.columns(2)
                             with col_rec1:
                                 st.markdown(f"**{category}**")
                             with col_rec2:
                                 st.markdown(f"{recommendation}")
                             
-                            if i < len(recs) - 1:
+                            if i < len(recommendations_data) - 1:
                                 st.markdown("<hr style='margin:5px 0; opacity:0.2;'>", unsafe_allow_html=True)
                         
                         # ========== ACTION BUTTONS ==========
@@ -4039,10 +4038,10 @@ elif page == " Lab Reports":
                                 'filename': uploaded_file.name
                             }
                             st.session_state.lab_reports.append(report_entry)
-                            st.success(" Saved")
+                            st.success("✅ Saved")
                         
                         with col_btn2:
-                            # Download as text
+                            # Download as text - FIXED: Using recommendations_data instead of recs
                             report_text = f"""
 B12 LAB REPORT ANALYSIS
 Date: {datetime.now().strftime("%Y-%m-%d")}
@@ -4054,29 +4053,29 @@ Status: {status}
 Normal Range: 200-900 pg/mL
 
 RECOMMENDATIONS:
-• Supplement: {recs[0][1]}
-• Diet: {recs[1][1]}
-• Doctor: {recs[2][1]}
+• Supplement: {recommendations_data[0][1]}
+• Diet: {recommendations_data[1][1]}
+• Doctor: {recommendations_data[2][1]}
                             """
                             st.download_button(
-                                label=" Download",
+                                label="📥 Download",
                                 data=report_text,
                                 file_name=f"b12_report_{datetime.now().strftime('%Y%m%d')}.txt",
                                 mime="text/plain"
                             )
                         
                         with col_btn3:
-                            if st.button(" New Analysis"):
+                            if st.button("🔄 New Analysis"):
                                 st.rerun()
                         
                     else:
-                        st.error(f" Analysis failed: {ai_result.get('error', 'Unknown error')}")
+                        st.error(f"❌ Analysis failed: {ai_result.get('error', 'Unknown error')}")
                         
                 except Exception as e:
-                    st.error(f" Error: {str(e)}")
+                    st.error(f"❌ Error: {str(e)}")
         
         # Manual entry option
-        with st.expander("Enter Value Manually"):
+        with st.expander("📝 Enter Value Manually"):
             manual_b12 = st.number_input("Enter B12 Level (pg/mL)", 0, 2000, 0)
             if manual_b12 > 0 and st.button("Save Manual Entry"):
                 # Determine status
@@ -4094,7 +4093,7 @@ RECOMMENDATIONS:
                     'date': datetime.now().strftime("%Y-%m-%d")
                 }
                 st.session_state.lab_reports.append(report_entry)
-                st.success(f" Saved: {manual_b12} pg/mL")
+                st.success(f"✅ Saved: {manual_b12} pg/mL")
     
     else:
         # Welcome screen
@@ -4116,7 +4115,7 @@ RECOMMENDATIONS:
     # ==================== HISTORY SECTION ====================
     if st.session_state.lab_reports:
         st.markdown("---")
-        st.markdown("###  Recent Analyses")
+        st.markdown("### 📋 Recent Analyses")
         
         # Show last 3 reports
         for report in st.session_state.lab_reports[-3:]:
@@ -4138,7 +4137,6 @@ RECOMMENDATIONS:
                     st.markdown("🟢 Normal")
                 else:
                     st.markdown("⚪ Unknown")
-
 
 # ==================== MEAL PLANNER PAGE ====================
 elif page == " Meal Planner":
