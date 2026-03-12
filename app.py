@@ -3485,17 +3485,17 @@ if page == " Dashboard":
                 )
                 st.rerun()
         
-        with col_bulk3:
-            if st.button(" Delete All", key="delete_all_reminders_bulk", use_container_width=True):
-                # Show confirmation
-                if st.checkbox(" Confirm delete ALL reminders", key="confirm_delete_all_reminders_bulk"):
-                    st.session_state.user_reminders = []
-                    add_notification(
-                        title=" All Reminders Deleted",
-                        message="Your reminder list has been cleared.",
-                        type="warning"
-                    )
-                    st.rerun()
+        # with col_bulk3:
+        #     if st.button(" Delete All", key="delete_all_reminders_bulk", use_container_width=True):
+        #         # Show confirmation
+        #         if st.checkbox(" Confirm delete ALL reminders", key="confirm_delete_all_reminders_bulk"):
+        #             st.session_state.user_reminders = []
+        #             add_notification(
+        #                 title=" All Reminders Deleted",
+        #                 message="Your reminder list has been cleared.",
+        #                 type="warning"
+        #             )
+        #             st.rerun()
     
     else:
         st.info("No reminders yet. Add your first reminder above!")
