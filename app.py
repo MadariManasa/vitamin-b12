@@ -4425,30 +4425,65 @@ elif page == " Voice Assistant":
             st.session_state.voice_question = question_text
         
         # ========== GET AI RESPONSE ==========
+        # ========== GET AI RESPONSE ==========
         st.markdown("###  Step 3: Get AI Response")
-        
+
         if st.button(" Generate Answer", type="primary", use_container_width=True, disabled=not st.session_state.voice_question):
             with st.spinner("AI is thinking..."):
                 try:
                     from utils import setup_gemini_api
                     
+                    # Show debug info (remove after fixing)
+                    debug_placeholder = st.empty()
+                    debug_placeholder.info("🔄 Connecting to Gemini API...")
+                    
                     model = setup_gemini_api()
+                    
                     if model:
+                        debug_placeholder.success("✅ Connected to Gemini API")
+                        
                         prompt = f"""You are a helpful Vitamin B12 expert assistant.
                         
-Question: {st.session_state.voice_question}
+        Question: {st.session_state.voice_question}
 
-Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
+        Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
                         
                         response = model.generate_content(prompt)
                         st.session_state.ai_response = response.text
-                        st.success(" Answer ready!")
+                        debug_placeholder.empty()
+                        st.success("✅ Answer ready!")
                         st.rerun()
                     else:
-                        st.error("AI service unavailable")
+                        debug_placeholder.error("❌ Failed to connect to Gemini API")
+                        st.error("AI service unavailable - Check API key")
                         
                 except Exception as e:
-                    st.error(f" Error: {str(e)}")
+                    st.error(f"❌ Error: {str(e)}")
+                    st.exception(e)  # Shows full error details
+#         st.markdown("###  Step 3: Get AI Response")
+        
+#         if st.button(" Generate Answer", type="primary", use_container_width=True, disabled=not st.session_state.voice_question):
+#             with st.spinner("AI is thinking..."):
+#                 try:
+#                     from utils import setup_gemini_api
+                    
+#                     model = setup_gemini_api()
+#                     if model:
+#                         prompt = f"""You are a helpful Vitamin B12 expert assistant.
+                        
+# Question: {st.session_state.voice_question}
+
+# Provide a clear, accurate answer about Vitamin B12. Keep it concise."""
+                        
+#                         response = model.generate_content(prompt)
+#                         st.session_state.ai_response = response.text
+#                         st.success(" Answer ready!")
+#                         st.rerun()
+#                     else:
+#                         st.error("AI service unavailable")
+                        
+#                 except Exception as e:
+#                     st.error(f" Error: {str(e)}")
         
         # ========== SHOW ANSWER ==========
         if st.session_state.ai_response:
