@@ -6321,7 +6321,7 @@ elif page == " Barcode Scanner":
         margin-bottom: 20px;
     ">
         <h3> Open Food Facts Scanner</h3>
-        <p>Searching 3+ Million Real Products • No API Key Needed</p>
+        <p>Searching 3+ Million Real Products </p>
     </div>
     """, unsafe_allow_html=True)
     
