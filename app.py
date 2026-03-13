@@ -2395,24 +2395,24 @@ def show_user_profile():
             
             st.warning(" Danger Zone")
             
-            col_a, col_b = st.columns(2)
+            # col_a, col_b = st.columns(2)
             
-            with col_a:
-                if st.button(" Delete My Data", type="secondary"):
-                    if st.checkbox("I understand this will delete ALL my data"):
-                        with st.spinner("Deleting data..."):
-                            deleted = st.session_state.mongodb.clear_user_data(user['user_id'])
-                            st.success(f" Deleted {deleted} data records")
+            # with col_a:
+            #     if st.button(" Delete My Data", type="secondary"):
+            #         if st.checkbox("I understand this will delete ALL my data"):
+            #             with st.spinner("Deleting data..."):
+            #                 deleted = st.session_state.mongodb.clear_user_data(user['user_id'])
+            #                 st.success(f" Deleted {deleted} data records")
             
-            with col_b:
-                if st.button(" Delete Account", type="secondary"):
-                    if st.checkbox("I understand this will permanently delete my account"):
-                        with st.spinner("Deleting account..."):
-                            deleted = st.session_state.mongodb.delete_user_account(user['user_id'])
-                            st.success(f" Account deleted. Removed {deleted} records")
-                            st.session_state.authenticated = False
-                            st.session_state.current_user = None
-                            st.rerun()
+            # with col_b:
+            #     if st.button(" Delete Account", type="secondary"):
+            #         if st.checkbox("I understand this will permanently delete my account"):
+            #             with st.spinner("Deleting account..."):
+            #                 deleted = st.session_state.mongodb.delete_user_account(user['user_id'])
+            #                 st.success(f" Account deleted. Removed {deleted} records")
+            #                 st.session_state.authenticated = False
+            #                 st.session_state.current_user = None
+            #                 st.rerun()
 
 def logout():
     """Logout user"""
